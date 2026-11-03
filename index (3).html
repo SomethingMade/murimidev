@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaka Liquor Restaurant | Fine Dining & Craft Spirits</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            DEFAULT: '#B8860B',
+                            light: '#D4AF37',
+                            dark: '#8B6508'
+                        },
+                        cream: {
+                            50: '#FDFBF7',
+                            100: '#F7F3E9',
+                            200: '#EFE8D8',
+                            300: '#E2D5BC'
+                        },
+                        charcoal: {
+                            900: '#1C1917',
+                            800: '#292524',
+                            700: '#44403C'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Light Theme Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-cream-50 text-charcoal-900 font-sans antialiased selection:bg-gold selection:text-white">
+
+    <!-- Age Verification Modal -->
+    <div id="ageModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal-900/80 backdrop-blur-md">
+        <div class="glass p-8 md:p-10 rounded-2xl max-w-md w-full text-center border border-gold/30 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-gold/10 rounded-full blur-2xl"></div>
+            <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-2xl">
+                <i class="fa-solid font-serif font-bold">18+</i>
+            </div>
+            <h3 class="text-2xl font-serif font-bold text-charcoal-900 mb-2">Age Verification</h3>
+            <p class="text-stone-600 text-sm mb-6">Welcome to Shaka Liquor Restaurant. Please confirm that you are of legal drinking age in your country.</p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="confirmAge(true)" class="flex-1 py-3 px-6 rounded-xl bg-gold hover:bg-gold-dark text-white font-semibold transition duration-200 shadow-lg shadow-gold/20">
+                    I am 18 or older
+                </button>
+                <button onclick="confirmAge(false)" class="flex-1 py-3 px-6 rounded-xl bg-cream-200 hover:bg-cream-300 text-charcoal-700 font-medium border border-stone-300 transition duration-200">
+                    Under 18
+                </button>
+            </div>
+            <p id="ageError" class="text-red-500 text-xs mt-4 hidden">Access restricted. You must be of legal age to enter.</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-40 glass border-b border-gold/20 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gold/20 border border-gold/50 flex items-center justify-center text-gold font-serif text-xl font-bold">
+                        S
+                    </div>
+                    <span class="font-serif text-2xl font-bold tracking-wider gold-gradient-text">SHAKA</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#about" class="text-charcoal-700 hover:text-gold text-sm font-medium transition">About</a>
+                    <a href="#atmosphere" class="text-charcoal-700 hover:text-gold text-sm font-medium transition">Atmosphere</a>
+                    <a href="#menu" class="text-charcoal-700 hover:text-gold text-sm font-medium transition">Menu & Bar</a>
+                    <a href="#reservations" class="text-charcoal-700 hover:text-gold text-sm font-medium transition">Reservations</a>
+                    <a href="#contact" class="text-charcoal-700 hover:text-gold text-sm font-medium transition">Contact</a>
+                </div>
+                <div class="hidden md:block">
+                    <a href="#reservations" class="px-5 py-2.5 rounded-full bg-gold text-white hover:bg-gold-dark transition duration-300 text-sm font-semibold shadow-md">
+                        Book a Table
+                    </a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="text-charcoal-700 hover:text-gold p-2">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden glass border-t border-gold/20 px-4 pt-2 pb-6 space-y-3">
+            <a href="#about" class="block py-2 text-charcoal-700 hover:text-gold">About</a>
+            <a href="#atmosphere" class="block py-2 text-charcoal-700 hover:text-gold">Atmosphere</a>
+            <a href="#menu" class="block py-2 text-charcoal-700 hover:text-gold">Menu & Bar</a>
+            <a href="#reservations" class="block py-2 text-charcoal-700 hover:text-gold">Reservations</a>
+            <a href="#contact" class="block py-2 text-charcoal-700 hover:text-gold">Contact</a>
+            <a href="#reservations" class="block text-center py-2.5 rounded-full bg-gold text-white font-bold mt-4">Book Table</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-cream-100">
+        <div class="absolute inset-0 bg-cover bg-center opacity-25" style="background-image: url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="relative max-w-4xl mx-auto text-center px-4 sm:px-6 py-24">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-gold/15 border border-gold/30 text-gold text-xs font-semibold tracking-widest uppercase mb-6">
+                Culinary Excellence & Artisan Mixology
+            </span>
+            <h1 class="font-serif text-5xl md:text-7xl font-bold tracking-tight text-charcoal-900 mb-6 leading-tight">
+                Where African Heritage Meets <span class="gold-gradient-text italic">Modern Luxury</span>
+            </h1>
+            <p class="text-lg md:text-xl text-charcoal-700 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+                Indulge in flame-grilled gourmet specialties, aged reserve liquors, and vibrant lounge ambiance crafted for unforgettable nights.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#reservations" class="w-full sm:w-auto px-8 py-4 rounded-full bg-gold text-white font-bold hover:bg-gold-dark transition duration-300 shadow-lg shadow-gold/25">
+                    Reserve Your Table
+                </a>
+                <a href="#menu" class="w-full sm:w-auto px-8 py-4 rounded-full glass text-charcoal-900 font-medium hover:border-gold transition duration-300">
+                    Explore Menu
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-cream-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <span class="text-gold text-sm font-bold tracking-widest uppercase">Our Story</span>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold text-charcoal-900 leading-tight">
+                        A Passion for Fine Spirits & Charcoal Grills
+                    </h2>
+                    <p class="text-stone-600 leading-relaxed">
+                        Shaka Liquor Restaurant brings together the boldness of high-end lounge dining with an expansive collection of world-class spirits, rare whiskies, and handcrafted cocktails.
+                    </p>
+                    <p class="text-stone-600 leading-relaxed">
+                        Our master chefs select premium cuts cooked to perfection over woodfires, paired seamlessly with signatures curated by renowned mixologists.
+                    </p>
+                    <div class="grid grid-cols-3 gap-6 pt-4 border-t border-stone-300">
+                        <div>
+                            <span class="block font-serif text-3xl font-bold text-gold">150+</span>
+                            <span class="text-xs text-stone-600 uppercase tracking-wider">Premium Spirits</span>
+                        </div>
+                        <div>
+                            <span class="block font-serif text-3xl font-bold text-gold">4.9★</span>
+                            <span class="text-xs text-stone-600 uppercase tracking-wider">Guest Rating</span>
+                        </div>
+                        <div>
+                            <span class="block font-serif text-3xl font-bold text-gold">Live</span>
+                            <span class="text-xs text-stone-600 uppercase tracking-wider">Weekend Sets</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="aspect-w-4 aspect-h-5 rounded-2xl overflow-hidden border border-gold/20 shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=80" alt="Restaurant Interior" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 glass p-6 rounded-xl border border-gold/30 hidden sm:block">
+                        <div class="flex items-center gap-4">
+                            <i class="fa-solid fa-wine-glass text-gold text-3xl"></i>
+                            <div>
+                                <h4 class="text-charcoal-900 font-bold text-sm">VIP Tasting Lounge</h4>
+                                <p class="text-xs text-stone-600">Exclusive pairings available daily</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Atmosphere & Highlights -->
+    <section id="atmosphere" class="py-20 bg-cream-100 border-y border-stone-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-gold text-sm font-bold tracking-widest uppercase">The Experience</span>
+                <h2 class="font-serif text-4xl font-bold text-charcoal-900 mt-2">Elevated Evenings</h2>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-gold/10 border border-gold/30 flex items-center justify-center text-gold text-xl mb-6">
+                        <i class="fa-solid fa-martini-glass-citrus"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-charcoal-900 mb-3">Craft Cocktail Bar</h3>
+                    <p class="text-stone-600 text-sm leading-relaxed">Bespoke concoctions created with house infusions, rare bitters, and premium imported liquors.</p>
+                </div>
+                <div class="glass-card p-8 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-gold/10 border border-gold/30 flex items-center justify-center text-gold text-xl mb-6">
+                        <i class="fa-solid fa-drumstick-bite"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-charcoal-900 mb-3">Flame Grill Kitchen</h3>
+                    <p class="text-stone-600 text-sm leading-relaxed">Aged steaks, succulent seafood grills, and flavorful traditional braai-inspired specialties.</p>
+                </div>
+                <div class="glass-card p-8 rounded-2xl sm:col-span-2 lg:col-span-1">
+                    <div class="w-12 h-12 rounded-xl bg-gold/10 border border-gold/30 flex items-center justify-center text-gold text-xl mb-6">
+                        <i class="fa-solid fa-music"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-charcoal-900 mb-3">Vibrant Resident DJs</h3>
+                    <p class="text-stone-600 text-sm leading-relaxed">Deep house, Afrobeats, and smooth lounge tunes setting the backdrop for late-night celebrations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Menu Section -->
+    <section id="menu" class="py-24 bg-cream-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-gold text-sm font-bold tracking-widest uppercase">Curated Offerings</span>
+                <h2 class="font-serif text-4xl md:text-5xl font-bold text-charcoal-900 mt-2">Food & Beverage Menu</h2>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
+                <button onclick="filterMenu('all')" class="menu-tab active py-2.5 px-6 rounded-full text-sm font-semibold border border-gold bg-gold text-white transition">All Items</button>
+                <button onclick="filterMenu('cocktails')" class="menu-tab py-2.5 px-6 rounded-full text-sm font-semibold border border-stone-300 bg-cream-100 text-charcoal-700 hover:border-gold transition">Craft Cocktails</button>
+                <button onclick="filterMenu('mains')" class="menu-tab py-2.5 px-6 rounded-full text-sm font-semibold border border-stone-300 bg-cream-100 text-charcoal-700 hover:border-gold transition">Flame Grill</button>
+                <button onclick="filterMenu('spirits')" class="menu-tab py-2.5 px-6 rounded-full text-sm font-semibold border border-stone-300 bg-cream-100 text-charcoal-700 hover:border-gold transition">Reserve Spirits</button>
+                <button onclick="filterMenu('starters')" class="menu-tab py-2.5 px-6 rounded-full text-sm font-semibold border border-stone-300 bg-cream-100 text-charcoal-700 hover:border-gold transition">Small Plates</button>
+            </div>
+
+            <!-- Menu Grid -->
+            <div id="menuContainer" class="grid md:grid-cols-2 gap-8">
+                <!-- Dynamically populated via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Table Reservations Section -->
+    <section id="reservations" class="py-24 bg-cream-100 relative">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass p-8 md:p-12 rounded-3xl border border-gold/20 shadow-xl relative">
+                <div class="text-center max-w-xl mx-auto mb-10">
+                    <span class="text-gold text-sm font-bold tracking-widest uppercase">Join Us</span>
+                    <h2 class="font-serif text-4xl font-bold text-charcoal-900 mt-2">Reserve Your Table</h2>
+                    <p class="text-stone-600 text-sm mt-2">Secure your spot for dinner, VIP lounge seating, or special celebrations.</p>
+                </div>
+
+                <form id="reservationForm" class="grid md:grid-cols-2 gap-6" onsubmit="handleReservation(event)">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-2">Full Name</label>
+                        <input type="text" required placeholder="John Doe" class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 text-charcoal-900 focus:outline-none focus:border-gold transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-2">Phone Number</label>
+                        <input type="tel" required placeholder="+27 82 123 4567" class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 text-charcoal-900 focus:outline-none focus:border-gold transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-2">Date</label>
+                        <input type="date" required class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 text-charcoal-900 focus:outline-none focus:border-gold transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-2">Time</label>
+                        <select required class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 text-charcoal-900 focus:outline-none focus:border-gold transition">
+                            <option value="">Select Time Slot</option>
+                            <option value="17:00">17:00 - Early Evening</option>
+                            <option value="19:00">19:00 - Prime Dinner</option>
+                            <option value="21:00">21:00 - Late Lounge</option>
+                            <option value="23:00">23:00 - Nightclub & Cocktails</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-2">Number of Guests</label>
+                        <select required class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 text-charcoal-900 focus:outline-none focus:border-gold transition">
+                            <option value="2">2 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="6">6 Guests</option>
+                            <option value="8+">8+ Guests (VIP Booth)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-2">Seating Preference</label>
+                        <select class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 text-charcoal-900 focus:outline-none focus:border-gold transition">
+                            <option value="main">Main Dining Room</option>
+                            <option value="terrace">Outdoor Terrace Lounge</option>
+                            <option value="vip">VIP Spirit Booth</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-2">Special Requests</label>
+                        <textarea rows="3" placeholder="Birthday celebration, dietary needs, preferred liquor brands..." class="w-full bg-white border border-stone-300 rounded-xl px-4 py-3 text-charcoal-900 focus:outline-none focus:border-gold transition"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <button type="submit" class="w-full py-4 rounded-xl bg-gold hover:bg-gold-dark text-white font-bold transition duration-300 shadow-lg shadow-gold/20 text-base">
+                            Confirm Reservation
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Toast Feedback -->
+                <div id="reservationSuccess" class="hidden mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/40 text-emerald-700 text-center font-medium">
+                    <i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i> Reservation request received! We will confirm via SMS shortly.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location & Contact Section -->
+    <section id="contact" class="py-24 bg-cream-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-3 gap-12">
+                <div>
+                    <h3 class="font-serif text-3xl font-bold text-charcoal-900 mb-6">Contact & Location</h3>
+                    <div class="space-y-6 text-charcoal-700">
+                        <div class="flex items-start gap-4">
+                            <i class="fa-solid fa-location-dot text-gold text-xl mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-charcoal-900">Address</h4>
+                                <p class="text-sm text-stone-600">45 Shaka Boulevard, Luxury District<br>Johannesburg / Cape Town, South Africa</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="fa-solid fa-phone text-gold text-xl mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-charcoal-900">Direct Line</h4>
+                                <p class="text-sm text-stone-600">+27 (0) 11 987 6543</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="fa-solid fa-envelope text-gold text-xl mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-charcoal-900">Email & Inquiries</h4>
+                                <p class="text-sm text-stone-600">reservations@shakaliquor.co.za</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="fa-solid fa-shirt text-gold text-xl mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-charcoal-900">Dress Code</h4>
+                                <p class="text-sm text-stone-600">Smart Casual / High-Fashion Evening Wear</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-serif text-3xl font-bold text-charcoal-900 mb-6">Operating Hours</h3>
+                    <div class="space-y-4 glass p-6 rounded-2xl border border-stone-300">
+                        <div class="flex justify-between py-2 border-b border-stone-300">
+                            <span class="text-stone-600">Monday - Thursday</span>
+                            <span class="text-gold font-semibold">16:00 - 00:00</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-stone-300">
+                            <span class="text-stone-600">Friday - Saturday</span>
+                            <span class="text-gold font-semibold">14:00 - 02:00</span>
+                        </div>
+                        <div class="flex justify-between py-2">
+                            <span class="text-stone-600">Sunday Grill & Chill</span>
+                            <span class="text-gold font-semibold">12:00 - 23:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-serif text-3xl font-bold text-charcoal-900 mb-6">Find Us</h3>
+                    <div class="h-64 rounded-2xl overflow-hidden glass border border-gold/20 flex items-center justify-center relative shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80" alt="Map View" class="w-full h-full object-cover opacity-75">
+                        <a href="https://maps.google.com" target="_blank" class="absolute px-5 py-2.5 rounded-full bg-gold text-white font-bold text-sm shadow-xl hover:bg-gold-dark transition">
+                            Open in Google Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-cream-100 border-t border-stone-300 text-center text-stone-500 text-xs">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 Shaka Liquor Restaurant. All rights reserved. Drink Responsibly.</p>
+            <div class="flex space-x-6 text-stone-600 text-lg">
+                <a href="#" class="hover:text-gold transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-gold transition"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#" class="hover:text-gold transition"><i class="fa-brands fa-x-twitter"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Link -->
+    <script src="script.js"></script>
+</body>
+</html>
