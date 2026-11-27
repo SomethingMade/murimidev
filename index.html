@@ -5,7 +5,7 @@
 <title>Vuzora</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF" id="mt">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%237C3AED'/%3E%3Cpath d='M12 9l11 7-11 7z' fill='%23FFFFFF'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2032%2032%22%3E%3Crect%20width=%2232%22%20height=%2232%22%20rx=%229%22%20fill=%22%237C3AED%22/%3E%3Cpath%20fill=%22%23fff%22%20transform=%22translate(7%207.9)%20scale(.0278)%20translate(-97%20-82)%22%20d=%22M320%2082%20622%20236V352L320%20203ZM214%20278%20320%20205V505L622%20352%20745%20408%20225%20664%2097%20614%20214%20560Z%22/%3E%3C/svg%3E">
 <style>
 :root{--bg:#0F0F0F;--s2:#272727;--s3:#3F3F3F;--ln:#303030;--tx:#F1F1F1;--mu:#AAA;--link:#3EA6FF;--hot:#FF4E45;color-scheme:dark}
 [data-theme=light]{--bg:#FFF;--s2:#F2F2F2;--s3:#E5E5E5;--ln:#E5E5E5;--tx:#0F0F0F;--mu:#606060;--link:#065FD4;--hot:#C00;color-scheme:light}
@@ -17,7 +17,7 @@ button{cursor:pointer;border:0;background:none;padding:0}
 h2{margin:0 0 12px}
 .top{position:fixed;inset:0 0 auto;height:calc(56px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 16px 0;display:flex;align-items:center;gap:12px;background:var(--bg);z-index:10}
 .logo{display:flex;align-items:center;gap:6px;font-weight:700;font-size:20px;letter-spacing:-.04em}
-.logo svg{width:30px;height:30px}
+.logo{gap:9px;color:var(--tx)}.logo .lm{height:28px;width:auto}.logo .lt{height:11.5px;width:auto;fill:currentColor}
 .ic{width:20px;height:20px;flex:none;display:block}
 .btn .ic{width:18px;height:18px}
 form.s{flex:1;max-width:600px;margin:0 auto;display:flex}
@@ -64,7 +64,7 @@ textarea{min-height:60px;resize:vertical}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:60}
 #toast.on{opacity:1}
 .empty{text-align:center;padding:60px 16px;color:var(--mu)}
-@media(max-width:800px){aside{display:none}main{margin:0;padding:calc(68px + env(safe-area-inset-top)) 12px 40px}.w{grid-template-columns:1fr}.logo span,.hide-m{display:none}.top{gap:8px;padding-left:12px;padding-right:12px}}
+@media(max-width:800px){aside{display:none}main{margin:0;padding:calc(68px + env(safe-area-inset-top)) 12px 40px}.w{grid-template-columns:1fr}.logo .lt,.hide-m{display:none}.top{gap:8px;padding-left:12px;padding-right:12px}}
 
 /* ── mobile bottom nav ── */
 .bn{display:none}
@@ -202,7 +202,7 @@ input::selection,textarea::selection{background:#3EA6FF55}
 </head>
 <body>
 <header class="top">
-  <a class="logo" href="#/"><svg viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#7C3AED"/><path d="M12 9l11 7-11 7z" fill="#FFFFFF"/></svg><span>Vuzora</span></a>
+  <a class="logo" href="#/" aria-label="Vuzora home"><svg class="lm" viewBox="97 82 648 582" aria-hidden="true"><path fill="#7C3AED" d="M320 82 622 236V352L320 203ZM214 278 320 205V505L622 352 745 408 225 664 97 614 214 560Z"/></svg><svg class="lt" viewBox="0 -548 3391 560" aria-hidden="true"><path d="M224 0 -5 -534H125L291 -138L462 -534H582L353 0ZM874 7Q806 7 754 -18.5Q702 -44 673 -96.5Q644 -149 644 -229V-534H769V-246Q769 -174 801.5 -138.5Q834 -103 894 -103Q938 -103 970.5 -121Q1003 -139 1021.5 -175Q1040 -211 1040 -264V-534H1165V0H1046V-68Q1023 -39 988 -21Q936 7 874 7ZM1273 0V-79L1566 -434H1279V-534H1725V-455L1432 -100H1734V0ZM2077 7Q1995 7 1931 -28.5Q1867 -64 1830 -126Q1793 -188 1793 -267Q1793 -347 1830 -408.5Q1867 -470 1931 -505Q1995 -540 2077 -540Q2160 -540 2224.5 -505Q2289 -470 2325.5 -409Q2362 -348 2362 -267Q2362 -188 2325.5 -126Q2289 -64 2224.5 -28.5Q2160 7 2077 7ZM2077 -100Q2123 -100 2159 -120Q2195 -140 2215.5 -178Q2236 -216 2236 -267Q2236 -319 2215.5 -356.5Q2195 -394 2159 -414Q2123 -434 2078 -434Q2032 -434 1996.5 -414Q1961 -394 1940 -356.5Q1919 -319 1919 -267Q1919 -216 1940 -178Q1961 -140 1996.5 -120Q2032 -100 2077 -100ZM2470 0V-534H2589V-456Q2612 -491 2651 -512Q2702 -540 2779 -540V-421Q2771 -423 2764 -423.5Q2757 -424 2750 -424Q2679 -424 2637 -382.5Q2595 -341 2595 -259V0ZM3207 0V-65Q3188 -37 3157 -19Q3110 7 3039 7Q2979 7 2934 -13.5Q2889 -34 2864.5 -70.5Q2840 -107 2840 -153Q2840 -198 2861.5 -234Q2883 -270 2932 -291Q2981 -312 3062 -312H3200V-320Q3200 -375 3167 -405.5Q3134 -436 3067 -436Q3022 -436 2978.5 -422Q2935 -408 2905 -383L2856 -474Q2899 -507 2958.5 -523.5Q3018 -540 3082 -540Q3198 -540 3261.5 -484.5Q3325 -429 3325 -313V0ZM3200 -229H3071Q3007 -229 2985 -208.5Q2963 -188 2963 -158Q2963 -124 2990 -104Q3017 -84 3065 -84Q3111 -84 3147.5 -105Q3184 -126 3200 -167Z"/></svg></a>
   <form class="s" id="sf"><input id="q" type="search" placeholder="Search" aria-label="Search"><button type="submit" aria-label="Search"><span data-i="search"></span></button></form>
   <a class="btn hide-m" href="#/upload"><span data-i="plus"></span>Upload</a>
   
