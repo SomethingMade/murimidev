@@ -184,6 +184,24 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 .gs-e{flex:1;display:grid;place-content:center;justify-items:center;gap:14px;padding:24px;color:#aaa;text-align:center}
 .gs-e .ic{width:40px;height:40px}
 .gs-b{height:44px;padding:0 26px;border-radius:22px;background:#7C3AED;font-weight:600}
+.shm{position:relative;overflow:hidden;background:var(--s2)}
+.shm::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--s3),transparent);transform:translateX(-100%);animation:shm 1.3s ease-in-out infinite}
+@keyframes shm{to{transform:translateX(100%)}}
+@media(prefers-reduced-motion:reduce){.shm::after{animation:none}}
+.th.shm img{opacity:0}
+.th img{transition:opacity .3s}
+.skl .sl{display:grid;gap:8px;align-content:start}
+.skl .sl i,.sk-l{display:block;height:14px;border-radius:6px}
+.skl .sl i:last-child{width:60%}
+.sk-l{margin:0}
+.pg{display:flex;justify-content:center;align-items:center;gap:6px;margin:32px 0 8px;flex-wrap:wrap}
+.pg[hidden]{display:none}
+.pg button{min-width:38px;height:38px;padding:0 10px;border-radius:999px;background:var(--s2);font-weight:600;display:grid;place-items:center}
+.pg button.on{background:#7C3AED;color:#fff}
+.pg button[disabled]{opacity:.35;pointer-events:none}
+.pg .gap{color:var(--mu);padding:0 2px}
+.pg .ic{width:18px;height:18px}
+@media(max-width:480px){.pg{gap:4px}.pg button{min-width:34px;height:36px;padding:0 8px}}
 .btn.dlp{background:linear-gradient(90deg,var(--s3) var(--p,0%),var(--s2) var(--p,0%))}
 .pk input{display:none}
 .pz{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed var(--s3);border-radius:12px;background:var(--s2);color:var(--mu);font-weight:500;cursor:pointer;transition:.15s}
@@ -209,7 +227,7 @@ input::selection,textarea::selection{background:#3EA6FF55}
   <span id="acct"></span>
 </header>
 <aside id="side"></aside>
-<main id="v"></main>
+<main id="v"><div class="grid" aria-busy="true"><article class="skl"><div class="th shm"></div><div class="m"><span class="av shm"></span><div class="sl"><i class="shm"></i><i class="shm"></i></div></div></article><article class="skl"><div class="th shm"></div><div class="m"><span class="av shm"></span><div class="sl"><i class="shm"></i><i class="shm"></i></div></div></article><article class="skl"><div class="th shm"></div><div class="m"><span class="av shm"></span><div class="sl"><i class="shm"></i><i class="shm"></i></div></div></article><article class="skl"><div class="th shm"></div><div class="m"><span class="av shm"></span><div class="sl"><i class="shm"></i><i class="shm"></i></div></div></article><article class="skl"><div class="th shm"></div><div class="m"><span class="av shm"></span><div class="sl"><i class="shm"></i><i class="shm"></i></div></div></article><article class="skl"><div class="th shm"></div><div class="m"><span class="av shm"></span><div class="sl"><i class="shm"></i><i class="shm"></i></div></div></article><article class="skl"><div class="th shm"></div><div class="m"><span class="av shm"></span><div class="sl"><i class="shm"></i><i class="shm"></i></div></div></article><article class="skl"><div class="th shm"></div><div class="m"><span class="av shm"></span><div class="sl"><i class="shm"></i><i class="shm"></i></div></div></article></div></main>
 <nav class="bn" id="bn" aria-label="Main"></nav>
 
 
@@ -232,7 +250,7 @@ const ago=t=>{if(!t)return'';const s=(Date.now()-t)/1e3;if(s<60)return'just now'
 const dur=s=>{s=Math.round(+s||0);const h=s/3600|0,m=(s%3600)/60|0,c=s%60;return h?`${h}:${String(m).padStart(2,0)}:${String(c).padStart(2,0)}`:`${m}:${String(c).padStart(2,0)}`};
 const linkify=s=>s.replace(/(https?:\/\/[^\s<]+)/g,'<a class="lk" href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
 const av=(p,n,z=36)=>safe(p)?`<img class="av" style="width:${z}px;height:${z}px" src="${esc(p)}" alt="" referrerpolicy="no-referrer">`:`<span class="av" style="width:${z}px;height:${z}px;background:hsl(${[...String(n||'?')].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,0)} 50% 42%)">${esc((String(n||'?')[0]||'?').toUpperCase())}</span>`;
-const ICONS={play:'<path fill="currentColor" stroke="none" d="M7 4.5v15l13-7.5z"/>',pause:'<path fill="currentColor" stroke="none" d="M6 4h4v16H6zM14 4h4v16h-4z"/>',next:'<path fill="currentColor" stroke="none" d="M5 5l10 7-10 7zM17 5h2.2v14H17z"/>',volume:'<path fill="currentColor" stroke="none" d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>',mute:'<path fill="currentColor" stroke="none" d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9.5l5 5M22 9.5l-5 5"/>',full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',exitfs:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',download:'<path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-8c1.6 0 2.6 1.1 2.3 2.7L12.8 9H19a2 2 0 0 1 2 2.4l-1.3 6.6A2 2 0 0 1 17.7 20H7"/>',share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M7 8l5-5 5 5"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',check:'<path d="M5 12l5 5 9-10"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+const ICONS={chevl:'<path d="M15 5l-7 7 7 7"/>',chevr:'<path d="M9 5l7 7-7 7"/>',play:'<path fill="currentColor" stroke="none" d="M7 4.5v15l13-7.5z"/>',pause:'<path fill="currentColor" stroke="none" d="M6 4h4v16H6zM14 4h4v16h-4z"/>',next:'<path fill="currentColor" stroke="none" d="M5 5l10 7-10 7zM17 5h2.2v14H17z"/>',volume:'<path fill="currentColor" stroke="none" d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>',mute:'<path fill="currentColor" stroke="none" d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9.5l5 5M22 9.5l-5 5"/>',full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',exitfs:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',download:'<path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-8c1.6 0 2.6 1.1 2.3 2.7L12.8 9H19a2 2 0 0 1 2 2.4l-1.3 6.6A2 2 0 0 1 17.7 20H7"/>',share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M7 8l5-5 5 5"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',check:'<path d="M5 12l5 5 9-10"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 const icon=n=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||''}</svg>`;
 document.querySelectorAll('[data-i]').forEach(s=>{s.outerHTML=icon(s.dataset.i)});
 const AL=document.body.appendChild(Object.assign(document.createElement('div'),{id:'alerts'}));
@@ -286,13 +304,34 @@ const card=(v,del)=>{
     try{await remove(ref(db,`${N.m}/${v.id}`)).catch(()=>{});await remove(ref(db,`${N.l}/${v.id}`)).catch(()=>{});await remove(ref(db,`${N.v}/${v.id}`));
       if(v.videoPath)deleteObject(sr(st,v.videoPath)).catch(()=>{});if(v.thumbPath)deleteObject(sr(st,v.thumbPath)).catch(()=>{});
       bump(`${N.c}/${v.uid}/videoCount`,-1).catch(()=>{});P=null;d.remove();toast('Video deleted')}catch(e){toast(e.message,'error')}};
-  const th=d.querySelector('.th');io.observe(th);
+  const th=d.querySelector('.th'),im=th.querySelector('img'),imDone=()=>th.classList.remove('shm');th.classList.add('shm');im.addEventListener('load',imDone);im.addEventListener('error',imDone);if(im.complete&&im.naturalWidth)imDone();
+  io.observe(th);
   th.addEventListener('mouseenter',()=>{if(!touch.matches)preview(th)});
   th.addEventListener('mouseleave',()=>{if(!touch.matches&&activeTh===th)stopPrev()});
   th.addEventListener('focus',()=>{if(!touch.matches)preview(th)});
   th.addEventListener('blur',()=>{if(activeTh===th)stopPrev()});
   return d;
 };
+const skel=(box,n=12)=>{box.setAttribute('aria-busy','true');box.innerHTML=`<article class="skl"><div class="th shm"></div><div class="m"><span class="av shm"></span><div class="sl"><i class="shm"></i><i class="shm"></i></div></div></article>`.repeat(n)};
+const skRows=n=>Array(n).fill('<div class="rel"><div class="th shm"></div><div class="sl" style="flex:1;display:grid;gap:8px;align-content:start"><i class="shm sk-l"></i><i class="shm sk-l" style="width:60%"></i></div></div>').join('');
+const PGS={home:{p:1},dl:{p:1}};
+function paged(box,items,render,st,per=12){
+  let nav=box.nextElementSibling;if(!nav||!nav.classList.contains('pg')){nav=document.createElement('nav');nav.className='pg';nav.setAttribute('aria-label','Pagination');box.after(nav)}
+  const pages=Math.max(1,Math.ceil(items.length/per));
+  const draw=sc=>{
+    st.p=Math.min(Math.max(1,st.p||1),pages);box.removeAttribute('aria-busy');
+    render(items.slice((st.p-1)*per,st.p*per));
+    nav.innerHTML='';nav.hidden=pages<2;if(pages<2)return;
+    const b=(l,p,o={})=>{const e=document.createElement('button');e.innerHTML=l;e.setAttribute('aria-label',o.label||('Page '+p));if(o.on){e.className='on';e.setAttribute('aria-current','page')}if(o.dis)e.disabled=true;e.onclick=()=>{st.p=p;draw(true)};nav.appendChild(e)};
+    b(icon('chevl'),st.p-1,{dis:st.p<=1,label:'Previous page'});
+    let last=0;[...new Set([1,pages,st.p-1,st.p,st.p+1])].filter(n=>n>=1&&n<=pages).sort((x,y)=>x-y).forEach(n=>{
+      if(n-last==2)b(last+1,last+1,{on:last+1==st.p});else if(n-last>2){const g=document.createElement('span');g.className='gap';g.textContent='…';nav.appendChild(g)}
+      b(n,n,{on:n==st.p});last=n});
+    b(icon('chevr'),st.p+1,{dis:st.p>=pages,label:'Next page'});
+    if(sc)scrollTo({top:0,behavior:'smooth'});
+  };
+  draw();return draw;
+}
 const fill=(box,items,empty,del)=>{box.innerHTML='';if(!items.length)box.innerHTML=`<div class="empty">${empty}</div>`;else items.forEach(v=>box.appendChild(card(v,del)))};
 
 /* auth modal */
@@ -335,26 +374,27 @@ function chrome(){
 /* pages */
 async function home(tk){
   V.innerHTML=`<div class="chips">${['All',...CATS].map(c=>`<button class="chip${c==CAT?' on':''}" data-c="${c}">${c}</button>`).join('')}</div><div class="grid" id="g"></div>`;
+  skel($('#g'));
   let items;try{items=await pool()}catch(e){V.innerHTML=`<div class="empty">Couldn't load videos.<br>${esc(e.message)}</div>`;return}
   if(tk!==T)return;
-  const draw=()=>fill($('#g'),items.filter(v=>CAT=='All'||v.category==CAT),'No videos here yet. <a class="lk" href="#/upload">Upload one</a>');
+  const draw=()=>{const list=items.filter(v=>CAT=='All'||v.category==CAT);paged($('#g'),list,sl=>fill($('#g'),sl,'No videos here yet. <a class="lk" href="#/upload">Upload one</a>'),PGS.home)};
   draw();
-  V.querySelector('.chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;CAT=b.dataset.c;V.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x==b));draw()};
+  V.querySelector('.chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;CAT=b.dataset.c;PGS.home.p=1;V.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x==b));draw()};
 }
 async function search(q,tk){
   const inp=$('#q');if(document.activeElement!==inp)inp.value=q;
-  if(!V.querySelector('#rh'))V.innerHTML='<h2 id="rh"></h2><div class="grid" id="g"></div>';
+  if(!V.querySelector('#rh')){V.innerHTML='<h2 id="rh"></h2><div class="grid" id="g"></div>';skel($('#g'))}
   $('#rh').textContent=`Results for “${q}”`;
   try{
     const w=q.toLowerCase().split(/\s+/).filter(Boolean),items=await pool();if(tk!==T)return;
     const hits=items.filter(v=>{const h=`${v.title} ${v.channelName} ${v.category||''} ${v.desc||''}`.toLowerCase();return w.every(x=>h.includes(x))});
     const score=v=>{const t=(v.title||'').toLowerCase(),c=(v.channelName||'').toLowerCase();let n=0;w.forEach(x=>{if(t.startsWith(x))n+=4;else if(t.includes(' '+x))n+=3;else if(t.includes(x))n+=2;if(c.includes(x))n+=1});return n};
     hits.sort((a,b)=>score(b)-score(a)||(b.createdAt||0)-(a.createdAt||0));
-    fill($('#g'),hits,`No matches for “${esc(q)}”.`);
+    paged($('#g'),hits,sl=>fill($('#g'),sl,`No matches for “${esc(q)}”.`),{p:1});
   }catch(e){$('#g').innerHTML=`<div class="empty">${esc(e.message)}</div>`}
 }
 async function channel(uid,tk){
-  V.innerHTML='<div class="empty">Loading…</div>';
+  V.innerHTML=`<div class="row" style="gap:18px"><span class="av shm" style="width:80px;height:80px"></span><div style="flex:1;min-width:180px;display:grid;gap:10px"><i class="shm sk-l" style="width:40%;height:22px"></i><i class="shm sk-l" style="width:25%"></i></div></div><div class="grid" id="g"></div>`;skel($('#g'));
   const s=await get(ref(db,`${N.c}/${uid}`)).catch(()=>null);if(tk!==T)return;
   if(!s||!s.exists()){V.innerHTML='<div class="empty">Channel not found.</div>';return}
   const c=s.val(),own=me&&me.uid==uid;
@@ -362,7 +402,7 @@ async function channel(uid,tk){
   V.innerHTML=`<div class="row" style="gap:18px">${av(c.photo,c.name,80)}<div style="flex:1;min-width:180px"><h2 style="margin:0">${esc(c.name)}</h2><div class="mu">@${esc(c.handle)} · <span id="sc">${pl(subs,'subscriber')}</span></div><div class="mu">${esc(c.about||'')}</div></div>${own?'':'<button class="btn" id="sb"></button>'}</div><div class="grid" id="g"></div>`;
   const paint=()=>{const b=$('#sb');if(b){b.textContent=subbed?'Subscribed':'Subscribe';b.className='btn'+(subbed?'':' p')}$('#sc').textContent=pl(subs,'subscriber')};
   paint();if($('#sb'))$('#sb').onclick=()=>toggleSub(uid,()=>subbed,x=>{subbed=x;subs=Math.max(0,subs+(x?1:-1));paint()});
-  try{const items=await byChannel(uid);if(tk!==T)return;fill($('#g'),items,own?'You haven\'t uploaded anything yet.':'No videos yet.',own)}catch(e){$('#g').innerHTML=`<div class="empty">${esc(e.message)}</div>`}
+  try{const items=await byChannel(uid);if(tk!==T)return;paged($('#g'),items,sl=>fill($('#g'),sl,own?'You haven\'t uploaded anything yet.':'No videos yet.',own),{p:1})}catch(e){$('#g').innerHTML=`<div class="empty">${esc(e.message)}</div>`}
 }
 async function toggleSub(uid,get_,set_){
   if(!need('Sign in to subscribe.')||uid==me.uid)return;
@@ -371,7 +411,7 @@ async function toggleSub(uid,get_,set_){
   catch(e){set_(was);toast(e.message,'error')}
 }
 async function watch(id,tk){
-  V.innerHTML='<div class="empty">Loading…</div>';
+  V.innerHTML=`<div class="w"><div><div class="th shm"></div><i class="shm sk-l" style="height:22px;width:70%;margin-top:14px"></i><div class="row"><span class="av shm" style="width:40px;height:40px"></span><div style="display:grid;gap:8px;flex:1;max-width:180px"><i class="shm sk-l"></i><i class="shm sk-l" style="width:60%"></i></div></div><div class="shm" style="height:84px;border-radius:12px"></div></div><div>${skRows(5)}</div></div>`;
   let s;try{s=await get(ref(db,`${N.v}/${id}`))}catch(e){V.innerHTML=`<div class="empty">${esc(e.message)}</div>`;return}
   if(tk!==T)return;
   if(!s.exists()){V.innerHTML='<div class="empty">This video isn\'t available.<br><a class="lk" href="#/">Back to Home</a></div>';return}
@@ -418,7 +458,8 @@ async function watch(id,tk){
   else{cb.innerHTML=`<textarea id="ct" maxlength="1000" placeholder="Add a comment"></textarea><div style="text-align:right;margin-top:8px"><button class="btn p" id="cp">Comment</button></div>`;
     $('#cp').onclick=async()=>{const text=$('#ct').value.trim();if(!text)return;const rec={uid:me.uid,name:(ch&&ch.name)||me.displayName||'User',photo:(ch&&ch.photo)||'',text,ts:Date.now()};
       try{const k=push(ref(db,`${N.m}/${id}`));await set(k,rec);$('#ct').value='';cc++;paint();$('#cl').prepend(cm(k.key,rec));bump(`${N.v}/${id}/commentsCount`,1).catch(()=>{})}catch(e){toast(e.message,'error')}}}
-  get(query(ref(db,`${N.m}/${id}`),orderByChild('ts'),limitToLast(50))).then(sn=>{if(tk!==T)return;const a=[];sn.forEach(c=>{a.push([c.key,c.val()])});a.reverse().forEach(([k,c])=>$('#cl').appendChild(cm(k,c)))}).catch(()=>{$('#cl').innerHTML='<p class="mu">Comments couldn\'t load.</p>'});
+  $('#cl').innerHTML=Array(3).fill('<div class="cm"><span class="av shm" style="width:40px;height:40px"></span><div style="display:grid;gap:8px"><i class="shm sk-l" style="width:30%"></i><i class="shm sk-l"></i></div></div>').join('');
+  get(query(ref(db,`${N.m}/${id}`),orderByChild('ts'),limitToLast(50))).then(sn=>{if(tk!==T)return;const a=[];sn.forEach(c=>{a.push([c.key,c.val()])});$('#cl').querySelectorAll('.cm .shm').forEach(x=>x.closest('.cm').remove());a.reverse().forEach(([k,c])=>$('#cl').appendChild(cm(k,c)))}).catch(()=>{$('#cl').innerHTML='<p class="mu">Comments couldn\'t load.</p>'});
 }
 
 /* ───── in-app downloads: stored in IndexedDB inside Vuzora, never as a file on the device ───── */
@@ -449,17 +490,18 @@ function startDl(v,on){
   return s;
 }
 async function downloads(tk){
-  V.innerHTML='<div class="empty">Loading…</div>';
+  V.innerHTML=`<div class="st" style="max-width:720px"><i class="shm sk-l" style="height:26px;width:40%;margin-bottom:14px"></i>${skRows(4)}</div>`;
   let a=[];try{a=await DB.all()}catch(_){}
   if(tk!==T)return;
   a.sort((x,y)=>y.ts-x.ts);
   const used=a.reduce((n,x)=>n+(x.size||0),0);
   V.innerHTML=`<div class="st" style="max-width:720px"><h2>Downloads</h2><p class="mu">Saved inside Vuzora on this device and playable only here${a.length?` · ${pl(a.length,'video')} · ${mb(used)}`:''}.</p><div id="dl"></div></div>`;
   if(!a.length){$('#dl').innerHTML='<div class="empty">Nothing downloaded yet.<br>Tap Download on any video to keep it in the app.</div>';return}
-  a.forEach(x=>{const tu=x.thumb?mkUrl(x.thumb):'',d=document.createElement('div');d.className='rel';
+  const rows=sl=>{$('#dl').innerHTML='';sl.forEach(x=>{const tu=x.thumb?mkUrl(x.thumb):'',d=document.createElement('div');d.className='rel';
     d.innerHTML=`<a class="th" href="#/downloads/${esc(x.id)}">${tu?`<img alt="" src="${tu}">`:''}<span class="d">${dur(x.duration)}</span></a><div style="flex:1;min-width:0"><a class="t" style="font-size:14px" href="#/downloads/${esc(x.id)}">${esc(x.title)}</a><div class="mu">${esc(x.channelName||'')}</div><div class="mu">${mb(x.size)}</div></div><button class="mu" aria-label="Remove download">${icon('trash')}</button>`;
     d.querySelector('button').onclick=async()=>{if(!await ask('Remove download?','The offline copy will be deleted from this device.','Remove',true))return;try{await DB.del(x.id);d.remove();if(!$('#dl .rel'))downloads(T)}catch(e){toast(e.message,'error')}};
-    $('#dl').appendChild(d)});
+    $('#dl').appendChild(d)})};
+  paged($('#dl'),a,rows,PGS.dl,10);
 }
 async function offline(id,tk){
   let r=null;try{r=await DB.get(id)}catch(_){}
