@@ -79,6 +79,10 @@ textarea{min-height:60px;resize:vertical}
   #toast{bottom:84px}
 }
 
+.sgw h2,.sgh2 h2{margin:0}.sgh2{display:flex;align-items:center;gap:14px;margin-bottom:14px}.sgh2 a{display:grid;place-items:center;width:40px;height:40px;margin-left:-8px;border-radius:50%}.sgh2 a:hover{background:var(--s2)}
+.sgt{margin:22px 0 4px;font-size:17px;font-weight:700}.sgr{display:flex;align-items:center;gap:22px;min-height:52px;padding:6px 0;font-size:16px}.sgr .ic{width:24px;height:24px}.sgr:hover{background:var(--s2);border-radius:10px}
+.sgl{border:0;border-top:1px solid var(--ln);margin:12px 0 0}.sgi{padding:8px 0}.sgn{text-align:center;padding:24px 8px}.sgn p{margin:0 0 6px}
+html[data-big]{zoom:1.12}html[data-rm] *{animation:none!important;transition:none!important}
 .st{max-width:560px;margin:0 auto}
 .st section{background:var(--s2);border-radius:16px;padding:16px;margin-bottom:14px}
 .st h3{margin:0 0 10px;font-size:15px}
@@ -696,17 +700,13 @@ addEventListener('scroll',()=>{clearTimeout(pt);pt=setTimeout(pickTouch,350)},{p
 
 /* settings */
 async function sq(f){const b=await createImageBitmap(f),c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d'),k=Math.max(256/b.width,256/b.height),w=b.width*k,g=b.height*k;x.drawImage(b,(256-w)/2,(256-g)/2,w,g);return new Promise(r=>c.toBlob(r,'image/jpeg',.86))}
-function settings(){
-  const tp=localStorage.getItem('vz_theme')||'light',prev=localStorage.getItem('vz_prev')!=='0',nxt=localStorage.getItem('vz_next')!=='0';
-  V.innerHTML=`<div class="st"><h2>Settings</h2>
+function setGeneral(){
+  const tp=localStorage.getItem('vz_theme')||'light';
+  V.innerHTML=`<div class="st">${sgHead("General")}
   <section><h3>Account</h3>${me?`<div class="row" style="margin:0">${av(ch&&ch.photo,ch&&ch.name,48)}<div><b>${esc(ch?ch.name:me.displayName||'')}</b><div class="mu">${esc(me.email||'')}</div></div></div>`:'<p class="mu" style="margin:0">You are not signed in.</p>'}</section>
   <section><h3>Appearance</h3><div class="seg">${['light','dark','system'].map(t=>`<button data-t="${t}" class="${tp==t?'on':''}">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div></section>
-  <section><h3>Playback</h3><label class="tg">Autoplay next video<input type="checkbox" id="sx" ${nxt?'checked':''}></label><label class="tg" style="margin-top:14px">Autoplay previews on cards<input type="checkbox" id="sp" ${prev?'checked':''}></label></section>
-  <section><h3>Downloads</h3><p class="mu" style="margin:0 0 12px">Videos you download are kept inside Vuzora and can only be played here.</p><a class="btn" href="#/downloads">${icon('download')}Manage downloads</a></section>
   ${me?`<section class="f"><h3>Your channel</h3><label>Channel name<input id="sn" maxlength="40" value="${esc(ch?ch.name:'')}"></label><label>About<textarea id="sa" maxlength="500">${esc(ch?ch.about||'':'')}</textarea></label><label class="pk">Profile picture<input id="sf2" type="file" accept="image/*"><span class="pz">${icon('upload')}<span class="pn">Choose a photo</span></span></label><button class="btn p" id="ss">Save changes</button></section><section style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rp">Reset password</button><button class="btn" id="so2">Sign out</button></section>`:'<section><button class="btn p" id="si5">Sign in</button></section>'}</div>`;
   V.querySelector('.seg').onclick=e=>{const b=e.target.closest('button');if(!b)return;setTheme(b.dataset.t);V.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('on',x==b))};
-  $('#sp').onchange=e=>{localStorage.setItem('vz_prev',e.target.checked?'1':'0');if(!e.target.checked)stopPrev()};
-  $('#sx').onchange=e=>localStorage.setItem('vz_next',e.target.checked?'1':'0');
   if(!me){$('#si5').onclick=()=>signIn();return}
   $('#rp').onclick=async()=>{try{await sendPasswordResetEmail(auth,me.email);toast('Reset link sent to '+me.email)}catch(e){toast(e.message,'error')}};
   $('#so2').onclick=async()=>{if(await ask('Sign out?','You can sign back in any time.','Sign out')){await signOut(auth);toast('Signed out','info')}};
@@ -724,6 +724,57 @@ function settings(){
     }catch(e){toast(e.message,'error')}finally{b.disabled=false}
   };
 }
+
+
+
+/* settings hub (grouped list, one page per item) */
+Object.assign(ICONS,{gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',accts:'<rect x="7" y="4" width="14" height="14" rx="2"/><path d="M3 8v12h14"/><circle cx="14" cy="10" r="2"/><path d="M10.5 16c.9-2 5.1-2 6 0"/>',family:'<circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-4 3-6 6-6s6 2 6 6"/><circle cx="18" cy="9" r="2"/>',lang:'<path d="M4 6h9M8.5 4v2M6 6c1 4 4 7 7 8M12 6c-1 4-4 7-8 9M14 20l4-9 4 9M15.5 17h5"/>',chart:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 16v-4M12 16V8M15 16v-6"/>',bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/>',prem:'<rect x="3" y="6" width="18" height="12" rx="3"/><path fill="currentColor" stroke="none" d="M10 9v6l5-3z"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/>',card:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',hist:'<path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4M12 8v4l3 2"/>',shield:'<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/><circle cx="12" cy="10" r="2"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',apps:'<circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/>',flask:'<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/>',hd:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 9v6M8 12h3M11 9v6M14 9h1.5a2.5 2.5 0 0 1 0 6H14z"/>',playo:'<path d="M7 4.5v15l13-7.5z"/>',cc:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 10a2 2 0 1 0 0 4M17 10a2 2 0 1 0 0 4"/>',slid:'<path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/>',live:'<circle cx="12" cy="12" r="2"/><path d="M8 8a5.7 5.7 0 0 0 0 8M16 8a5.7 5.7 0 0 1 0 8M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/>',acc:'<circle cx="12" cy="5" r="2"/><path d="M4 9h16M12 9v5M9 21l3-7 3 7"/>',tv:'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17v.5"/>',doc:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/>',fb:'<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>',inf:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'});
+const SG=[
+ ['Account',[['general','gear','General'],['accounts','accts','Switch or manage account'],['family','family','Family Center'],['languages','lang','Languages'],['time','chart','Time management'],['notifications','bell','Notifications'],['premium','prem','Get Vuzora Premium'],['purchases','tag','Purchases and memberships'],['billing','card','Billing & payments'],['history','hist','Manage all history'],['yourdata','shield','Your data in Vuzora'],['privacy','lock','Privacy'],['apps','apps','Connected apps'],['experimental','flask','Try experimental new features']]],
+ ['Video and audio preferences',[['quality','hd','Quality'],['playback','playo','Playback'],['captions','cc','Captions'],['datasaving','slid','Data saving'],['downloads','download','Downloads'],['livechat','live','Live chat'],['accessibility','acc','Accessibility'],['tv','tv','Watch on TV']]],
+ ['Help and policy',[['help','help','Help'],['terms','doc','Vuzora Terms of Service'],['feedback','fb','Send feedback'],['about','inf','About']]]
+];
+const SGT={};SG.forEach(g=>g[1].forEach(i=>SGT[i[0]]=i[2]));
+const sgHead=t=>`<div class="sgh2"><a href="#/settings" aria-label="Back">${icon('chevl')}</a><h2>${esc(t)}</h2></div>`;
+const sgSoon=(k,d)=>`<div class="sgn"><p><b>Not available yet.</b></p><p class="mu">${d||'This part of Vuzora is still being built.'}</p></div>`;
+function settings(){
+  V.innerHTML=`<div class="st sgw"><h2>Settings</h2>${SG.map(g=>`<h3 class="sgt">${g[0]}</h3>${g[1].map(i=>`<a class="sgr" href="#/settings/${i[0]}">${icon(i[1])}<span>${i[2]}</span></a>`).join('')}<hr class="sgl">`).join('').replace(/<hr class="sgl">$/,'')}</div>`;
+}
+function settingsPage(k){
+  if(!SGT[k])return settings();
+  document.title=SGT[k]+' · Vuzora';
+  if(k=='general')return setGeneral();
+  const tg=(id,l,on)=>`<label class="tg sgi">${l}<input type="checkbox" id="${id}" ${on?'checked':''}></label>`;
+  let body='',bind=()=>{};
+  if(k=='accounts'){
+    body=me?`<div class="row" style="margin:0 0 16px">${av(ch&&ch.photo,ch&&ch.name,48)}<div><b>${esc(ch?ch.name:me.displayName||'')}</b><div class="mu">${esc(me.email||'')}</div></div></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rp">Reset password</button><button class="btn" id="so2">Sign out</button></div>`:'<p class="mu">You are not signed in.</p><button class="btn p" id="si5">Sign in</button>';
+    bind=()=>{if(!me){$('#si5').onclick=()=>signIn();return}
+      $('#rp').onclick=async()=>{try{await sendPasswordResetEmail(auth,me.email);toast('Reset link sent to '+me.email)}catch(e){toast(e.message,'error')}};
+      $('#so2').onclick=async()=>{if(await ask('Sign out?','You can sign back in any time.','Sign out')){await signOut(auth);toast('Signed out','info')}}};
+  }else if(k=='time'){
+    const v=localStorage.getItem('vz_brk')||'0';
+    body=`<p class="mu">Get a reminder to take a break while Vuzora is open.</p><div class="seg" id="brk">${[['0','Off'],['15','15 min'],['30','30 min'],['60','60 min']].map(o=>`<button data-m="${o[0]}" class="${v==o[0]?'on':''}">${o[1]}</button>`).join('')}</div>`;
+    bind=()=>{$('#brk').onclick=e=>{const b=e.target.closest('button');if(!b)return;localStorage.setItem('vz_brk',b.dataset.m);brk();V.querySelectorAll('#brk button').forEach(x=>x.classList.toggle('on',x==b));toast(b.dataset.m=='0'?'Break reminders off':'Reminder every '+b.dataset.m+' minutes','info')}};
+  }else if(k=='playback'){
+    body=tg('sx','Autoplay next video',localStorage.getItem('vz_next')!=='0');
+    bind=()=>{$('#sx').onchange=e=>localStorage.setItem('vz_next',e.target.checked?'1':'0')};
+  }else if(k=='datasaving'){
+    body=tg('sp','Autoplay previews on cards',localStorage.getItem('vz_prev')!=='0')+'<p class="mu">Turn this off to stop videos from loading while you scroll.</p>';
+    bind=()=>{$('#sp').onchange=e=>{localStorage.setItem('vz_prev',e.target.checked?'1':'0');if(!e.target.checked)stopPrev()}};
+  }else if(k=='downloads'){
+    body=`<p class="mu" style="margin:0 0 12px">Videos you download are kept inside Vuzora and can only be played here.</p><a class="btn" href="#/downloads">${icon('download')}Manage downloads</a>`;
+  }else if(k=='accessibility'){
+    body=tg('ab','Larger text and controls',localStorage.getItem('vz_big')==='1')+tg('ar','Reduce motion',localStorage.getItem('vz_rm')==='1');
+    bind=()=>{$('#ab').onchange=e=>{localStorage.setItem('vz_big',e.target.checked?'1':'0');a11y()};$('#ar').onchange=e=>{localStorage.setItem('vz_rm',e.target.checked?'1':'0');a11y()}};
+  }else if(k=='languages'){
+    body='<p>Vuzora is currently available in English.</p>';
+  }else if(k=='about'){
+    body='<p><b>Vuzora</b></p><p class="mu">Watch, share and download videos.</p>';
+  }else body=sgSoon(k);
+  V.innerHTML=`<div class="st">${sgHead(SGT[k])}<section>${body}</section></div>`;bind();
+}
+const a11y=()=>{const d=document.documentElement;d.toggleAttribute('data-big',localStorage.getItem('vz_big')==='1');d.toggleAttribute('data-rm',localStorage.getItem('vz_rm')==='1')};a11y();
+let brkT;function brk(){clearInterval(brkT);const m=+localStorage.getItem('vz_brk')||0;if(m)brkT=setInterval(()=>toast('Time for a break?','info'),m*60000)}brk();
 
 
 /* custom file picker feedback */
@@ -749,6 +800,7 @@ function route(){
   if(m=h.match(/^#\/channel\/([^/?]+)/))return channel(decodeURIComponent(m[1]),tk);
   if(h=='#/downloads')return downloads(tk);
   if(m=h.match(/^#\/downloads\/([^/?]+)/))return offline(decodeURIComponent(m[1]),tk);
+  if(m=h.match(/^#\/settings\/([a-z0-9-]+)/))return settingsPage(m[1]);
   if(h=='#/settings')return settings();
   if(h=='#/upload')return upload();
   return home(tk);
