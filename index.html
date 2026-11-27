@@ -76,6 +76,37 @@ textarea{min-height:60px;resize:vertical}
   main{padding-bottom:84px}
   #toast{bottom:84px}
 }
+
+.st{max-width:560px;margin:0 auto}
+.st section{background:var(--s2);border-radius:16px;padding:16px;margin-bottom:14px}
+.st h3{margin:0 0 10px;font-size:15px}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;height:40px;border-radius:10px;background:var(--bg);font-weight:600}
+.seg .on{background:var(--tx);color:var(--bg)}
+.tg{display:flex;justify-content:space-between;align-items:center}
+.tg input{width:22px;height:22px;accent-color:#F03}
+@media(max-width:800px){.bn a,.bn button{min-width:56px}}
+
+/* custom alerts + dialogs */
+#alerts{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);width:min(420px,calc(100% - 24px));display:grid;gap:8px;z-index:80;pointer-events:none}
+.al{pointer-events:auto;display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--ln);border-left:4px solid #1a9c5a;border-radius:12px;padding:10px 8px 10px 12px;box-shadow:0 10px 30px #0004;animation:ain .2s}
+.al.error{border-left-color:#C00}.al.info{border-left-color:#065FD4}
+.al>.ic{width:20px;height:20px;color:#1a9c5a}.al.error>.ic{color:#C00}.al.info>.ic{color:#065FD4}
+.al span{flex:1;overflow-wrap:anywhere}
+.al button{width:28px;height:28px;display:grid;place-items:center;color:var(--mu)}
+.al button .ic{width:16px;height:16px}
+.al.out{opacity:0;transform:translateY(-8px);transition:.2s}
+@keyframes ain{from{opacity:0;transform:translateY(-8px)}}
+.btn.dg{background:#C00;color:#fff}
+
+/* no long-press highlight / callout on UI, media and avatars */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+img,svg,video,.av,.th,.d,.bn,aside,.chip,.btn{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
+.th,.th *{-webkit-touch-callout:none}
+::selection{background:transparent}
+input::selection,textarea::selection{background:#3EA6FF55}
 </style>
 </head>
 <body>
@@ -83,17 +114,17 @@ textarea{min-height:60px;resize:vertical}
   <a class="logo" href="#/"><svg viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#FF0033"/><path d="M12 9l11 7-11 7z" fill="#FFFFFF"/></svg><span>Vuzora</span></a>
   <form class="s" id="sf"><input id="q" type="search" placeholder="Search" aria-label="Search"><button aria-label="Search" data-i="search"></button></form>
   <a class="btn hide-m" href="#/upload"><span data-i="plus"></span>Upload</a>
-  <button class="btn" id="th" aria-label="Switch theme"></button>
+  
   <span id="acct"></span>
 </header>
 <aside id="side"></aside>
 <main id="v"></main>
 <nav class="bn" id="bn" aria-label="Main"></nav>
-<div id="toast"></div>
+
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,updateProfile}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,updateProfile,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import{getDatabase,ref,get,set,update,remove,push,query,orderByChild,limitToLast,equalTo,runTransaction}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 import{getStorage,ref as sr,uploadBytesResumable,getDownloadURL,deleteObject}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
@@ -110,18 +141,38 @@ const ago=t=>{if(!t)return'';const s=(Date.now()-t)/1e3;if(s<60)return'just now'
 const dur=s=>{s=Math.round(+s||0);const h=s/3600|0,m=(s%3600)/60|0,c=s%60;return h?`${h}:${String(m).padStart(2,0)}:${String(c).padStart(2,0)}`:`${m}:${String(c).padStart(2,0)}`};
 const linkify=s=>s.replace(/(https?:\/\/[^\s<]+)/g,'<a class="lk" href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
 const av=(p,n,z=36)=>safe(p)?`<img class="av" style="width:${z}px;height:${z}px" src="${esc(p)}" alt="" referrerpolicy="no-referrer">`:`<span class="av" style="width:${z}px;height:${z}px;background:hsl(${[...String(n||'?')].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,0)} 50% 42%)">${esc((String(n||'?')[0]||'?').toUpperCase())}</span>`;
-const ICONS={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-8c1.6 0 2.6 1.1 2.3 2.7L12.8 9H19a2 2 0 0 1 2 2.4l-1.3 6.6A2 2 0 0 1 17.7 20H7"/>',share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M7 8l5-5 5 5"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'};
+const ICONS={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-8c1.6 0 2.6 1.1 2.3 2.7L12.8 9H19a2 2 0 0 1 2 2.4l-1.3 6.6A2 2 0 0 1 17.7 20H7"/>',share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M7 8l5-5 5 5"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',check:'<path d="M5 12l5 5 9-10"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 const icon=n=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||''}</svg>`;
 document.querySelectorAll('[data-i]').forEach(s=>{s.outerHTML=icon(s.dataset.i)});
-let tt;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)};
+const AL=document.body.appendChild(Object.assign(document.createElement('div'),{id:'alerts'}));
+function toast(m,t='ok'){
+  const d=document.createElement('div');d.className='al '+t;d.setAttribute('role',t=='error'?'alert':'status');
+  d.innerHTML=`${icon(t=='error'?'alert':t=='info'?'info':'check')}<span>${esc(m)}</span><button aria-label="Dismiss">${icon('close')}</button>`;
+  const x=()=>{d.classList.add('out');setTimeout(()=>d.remove(),200)};
+  d.querySelector('button').onclick=x;AL.appendChild(d);while(AL.children.length>3)AL.firstChild.remove();
+  setTimeout(x,t=='error'?5000:2800);
+}
+/* custom confirm dialog */
+function ask(title,msg,ok='Confirm',danger){
+  return new Promise(res=>{
+    const o=document.createElement('div');o.className='ov';
+    o.innerHTML=`<div class="sh" role="alertdialog" aria-modal="true"><h2>${esc(title)}</h2><p class="mu" style="margin:0 0 18px;font-size:14px">${esc(msg)}</p><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" data-k="0">Cancel</button><button class="btn ${danger?'dg':'p'}" data-k="1">${esc(ok)}</button></div></div>`;
+    const done=v=>{document.removeEventListener('keydown',kd);o.remove();res(v)};
+    const kd=e=>{if(e.key=='Escape')done(false)};
+    o.onmousedown=e=>{if(e.target===o)done(false)};
+    o.querySelectorAll('button').forEach(b=>b.onclick=()=>done(b.dataset.k=='1'));
+    document.addEventListener('keydown',kd);document.body.appendChild(o);o.querySelector('[data-k="1"]').focus();
+  });
+}
 const bump=(p,b)=>runTransaction(ref(db,p),c=>Math.max(0,(+c||0)+b));
 
 let me=null,ch=null,T=0,P=null,CAT='All';
 
 /* theme */
-const setTheme=t=>{document.documentElement.dataset.theme=t;localStorage.setItem('vz_theme',t);$('#mt').content=t=='dark'?'#0F0F0F':'#FFFFFF';$('#th').innerHTML=icon(t=='dark'?'sun':'moon')};
+const mq=matchMedia('(prefers-color-scheme: dark)');
+const setTheme=pref=>{localStorage.setItem('vz_theme',pref);const t=pref=='system'?(mq.matches?'dark':'light'):pref;document.documentElement.dataset.theme=t;$('#mt').content=t=='dark'?'#0F0F0F':'#FFFFFF'};
 setTheme(localStorage.getItem('vz_theme')||'light');
-$('#th').onclick=()=>setTheme(document.documentElement.dataset.theme=='dark'?'light':'dark');
+mq.addEventListener('change',()=>{if(localStorage.getItem('vz_theme')=='system')setTheme('system')});
 
 /* data */
 const pool=()=>P||(P=get(query(ref(db,N.v),orderByChild('createdAt'),limitToLast(150))).then(s=>{const a=[];s.forEach(c=>{a.push({id:c.key,...c.val()})});return a.reverse()}).catch(e=>{P=null;throw e}));
@@ -140,10 +191,10 @@ const card=(v,del)=>{
   d.innerHTML=`<a class="th" data-src="${esc(safe(v.videoUrl))}" href="#/watch/${esc(v.id)}"><img loading="lazy" alt="" src="${esc(safe(v.thumbUrl))}"><span class="d">${dur(v.duration)}</span></a>
   <div class="m"><a href="#/channel/${esc(v.uid)}">${av(v.channelPhoto,v.channelName)}</a><div><a class="t" href="#/watch/${esc(v.id)}">${esc(v.title)}</a><a class="mu" href="#/channel/${esc(v.uid)}">${esc(v.channelName)}</a><div class="mu">${num(v.views)} views · ${ago(v.createdAt)}</div></div>${del?`<button class="btn" title="Delete video">${icon('trash')}Delete</button>`:''}</div>`;
   if(del)d.querySelector('button').onclick=async()=>{
-    if(!confirm(`Delete "${v.title}"?`))return;
+    if(!await ask('Delete video?',`"${v.title}" will be permanently deleted, along with its comments and likes.`,'Delete',true))return;
     try{await remove(ref(db,`${N.m}/${v.id}`)).catch(()=>{});await remove(ref(db,`${N.l}/${v.id}`)).catch(()=>{});await remove(ref(db,`${N.v}/${v.id}`));
       if(v.videoPath)deleteObject(sr(st,v.videoPath)).catch(()=>{});if(v.thumbPath)deleteObject(sr(st,v.thumbPath)).catch(()=>{});
-      bump(`${N.c}/${v.uid}/videoCount`,-1).catch(()=>{});P=null;d.remove();toast('Video deleted')}catch(e){toast(e.message)}};
+      bump(`${N.c}/${v.uid}/videoCount`,-1).catch(()=>{});P=null;d.remove();toast('Video deleted')}catch(e){toast(e.message,'error')}};
   const th=d.querySelector('.th');io.observe(th);
   th.addEventListener('mouseenter',()=>{if(!touch.matches)preview(th)});
   th.addEventListener('mouseleave',()=>{if(!touch.matches&&activeTh===th)stopPrev()});
@@ -180,10 +231,10 @@ const need=m=>{if(me)return true;signIn(m);return false};
 function chrome(){
   $('#acct').innerHTML=me?`<a href="#/channel/${me.uid}" aria-label="Your channel">${av(ch&&ch.photo,(ch&&ch.name)||me.displayName||me.email,34)}</a>`:'<button class="btn p" id="si">Sign in</button>';
   if(!me)$('#si').onclick=()=>signIn();
-  $('#side').innerHTML=`<a href="#/" data-r="home">Home</a><a href="#/upload" data-r="upload">Upload</a>${me?`<a href="#/channel/${me.uid}" data-r="mine">Your channel</a><button id="so">Sign out</button>`:''}`;
-  if(me)$('#so').onclick=async()=>{await signOut(auth);toast('Signed out')};
+  $('#side').innerHTML=`<a href="#/" data-r="home">Home</a><a href="#/upload" data-r="upload">Upload</a><a href="#/settings">Settings</a>${me?`<a href="#/channel/${me.uid}" data-r="mine">Your channel</a><button id="so">Sign out</button>`:''}`;
+  if(me)$('#so').onclick=async()=>{if(await ask('Sign out?','You can sign back in any time.','Sign out')){await signOut(auth);toast('Signed out','info')}};
   const h=location.hash||'#/';
-  $('#bn').innerHTML=`<a href="#/">${icon('home')}<span>Home</span></a><button id="bns">${icon('search')}<span>Search</span></button><a class="mk" href="#/upload" aria-label="Upload">${icon('plus')}</a>${me?`<a href="#/channel/${me.uid}">${icon('user')}<span>You</span></a>`:`<button id="bny">${icon('user')}<span>Sign in</span></button>`}`;
+  $('#bn').innerHTML=`<a href="#/">${icon('home')}<span>Home</span></a><button id="bns">${icon('search')}<span>Search</span></button><a class="mk" href="#/upload" aria-label="Upload">${icon('plus')}</a>${me?`<a href="#/channel/${me.uid}">${icon('user')}<span>You</span></a>`:`<button id="bny">${icon('user')}<span>Sign in</span></button>`}<a href="#/settings">${icon('settings')}<span>Settings</span></a>`;
   $('#bns').onclick=()=>{scrollTo(0,0);$('#q').focus()};
   if(!me)$('#bny').onclick=()=>signIn();
   document.querySelectorAll('#side a,#bn a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')===h));
@@ -221,7 +272,7 @@ async function toggleSub(uid,get_,set_){
   if(!need('Sign in to subscribe.')||uid==me.uid)return;
   const was=get_();set_(!was);
   try{await update(ref(db),{[`${N.s}/${uid}/${me.uid}`]:was?null:true,[`${N.ms}/${me.uid}/${uid}`]:was?null:true});await bump(`${N.c}/${uid}/subs`,was?-1:1);toast(was?'Unsubscribed':'Subscribed')}
-  catch(e){set_(was);toast(e.message)}
+  catch(e){set_(was);toast(e.message,'error')}
 }
 async function watch(id,tk){
   V.innerHTML='<div class="empty">Loading…</div>';
@@ -243,22 +294,23 @@ async function watch(id,tk){
   <aside style="position:static;width:auto;padding:0" id="rl"></aside></div>`;
   const vp=$('#vp'),paint=()=>{$('#lb').innerHTML=`${icon('like')}<span>${num(likes)}</span>`;$('#lb').classList.toggle('on',liked);$('#sc').textContent=pl(subs,'subscriber');const b=$('#sb');if(b){b.textContent=subbed?'Subscribed':'Subscribe';b.className='btn'+(subbed?'':' p')}$('#cn').textContent=pl(cc,'comment')};
   paint();
+  vp.addEventListener('ended',()=>{if(localStorage.getItem('vz_next')==='0'||tk!==T)return;const nx=rel.find(x=>x.id!=id);if(nx)location.hash=`#/watch/${nx.id}`});
   let counted=false;vp.addEventListener('timeupdate',()=>{if(!counted&&vp.currentTime>=5){counted=true;countView(id)}});
   $('#lb').onclick=async()=>{if(!need('Sign in to like videos.'))return;const was=liked;liked=!was;likes=Math.max(0,likes+(was?-1:1));paint();
-    try{was?await remove(ref(db,`${N.l}/${id}/${me.uid}`)):await set(ref(db,`${N.l}/${id}/${me.uid}`),true);await bump(`${N.v}/${id}/likes`,was?-1:1)}catch(e){liked=was;likes=Math.max(0,likes+(was?1:-1));paint();toast(e.message)}};
+    try{was?await remove(ref(db,`${N.l}/${id}/${me.uid}`)):await set(ref(db,`${N.l}/${id}/${me.uid}`),true);await bump(`${N.v}/${id}/likes`,was?-1:1)}catch(e){liked=was;likes=Math.max(0,likes+(was?1:-1));paint();toast(e.message,'error')}};
   if($('#sb'))$('#sb').onclick=()=>toggleSub(v.uid,()=>subbed,x=>{subbed=x;subs=Math.max(0,subs+(x?1:-1));paint()});
   $('#shb').onclick=async()=>{const u=location.href;try{navigator.share?await navigator.share({title:v.title,url:u}):(await navigator.clipboard.writeText(u),toast('Link copied'))}catch(_){}};
   const r=$('#rl');rel.filter(x=>x.id!=id).slice(0,12).forEach(x=>{const d=document.createElement('div');d.className='rel';d.innerHTML=`<a class="th" href="#/watch/${esc(x.id)}"><img loading="lazy" alt="" src="${esc(safe(x.thumbUrl))}"><span class="d">${dur(x.duration)}</span></a><div><a class="t" style="font-size:14px" href="#/watch/${esc(x.id)}">${esc(x.title)}</a><div class="mu">${esc(x.channelName)}</div><div class="mu">${num(x.views)} views</div></div>`;r.appendChild(d)});
   /* comments */
   const cm=(k,c)=>{const n=document.createElement('div');n.className='cm';const can=me&&(me.uid==c.uid||me.uid==v.uid);
     n.innerHTML=`${av(c.photo,c.name,40)}<div><b>${esc(c.name)}</b> <span class="mu">${esc(ago(c.ts))}</span><br>${linkify(esc(c.text))}</div>${can?`<button class="mu" aria-label="Delete comment">${icon('close')}</button>`:''}`;
-    if(can)n.querySelector('button').onclick=async()=>{if(!confirm('Delete this comment?'))return;try{await remove(ref(db,`${N.m}/${id}/${k}`));n.remove();cc=Math.max(0,cc-1);paint();bump(`${N.v}/${id}/commentsCount`,-1).catch(()=>{})}catch(e){toast(e.message)}};
+    if(can)n.querySelector('button').onclick=async()=>{if(!await ask('Delete comment?','This can\'t be undone.','Delete',true))return;try{await remove(ref(db,`${N.m}/${id}/${k}`));n.remove();cc=Math.max(0,cc-1);paint();bump(`${N.v}/${id}/commentsCount`,-1).catch(()=>{})}catch(e){toast(e.message,'error')}};
     return n};
   const cb=$('#cb');
   if(!me)cb.innerHTML='<button class="btn" id="cs">Sign in to comment</button>',$('#cs').onclick=()=>signIn('Sign in to join the conversation.');
   else{cb.innerHTML=`<textarea id="ct" maxlength="1000" placeholder="Add a comment"></textarea><div style="text-align:right;margin-top:8px"><button class="btn p" id="cp">Comment</button></div>`;
     $('#cp').onclick=async()=>{const text=$('#ct').value.trim();if(!text)return;const rec={uid:me.uid,name:(ch&&ch.name)||me.displayName||'User',photo:(ch&&ch.photo)||'',text,ts:Date.now()};
-      try{const k=push(ref(db,`${N.m}/${id}`));await set(k,rec);$('#ct').value='';cc++;paint();$('#cl').prepend(cm(k.key,rec));bump(`${N.v}/${id}/commentsCount`,1).catch(()=>{})}catch(e){toast(e.message)}}}
+      try{const k=push(ref(db,`${N.m}/${id}`));await set(k,rec);$('#ct').value='';cc++;paint();$('#cl').prepend(cm(k.key,rec));bump(`${N.v}/${id}/commentsCount`,1).catch(()=>{})}catch(e){toast(e.message,'error')}}}
   get(query(ref(db,`${N.m}/${id}`),orderByChild('ts'),limitToLast(50))).then(sn=>{if(tk!==T)return;const a=[];sn.forEach(c=>{a.push([c.key,c.val()])});a.reverse().forEach(([k,c])=>$('#cl').appendChild(cm(k,c)))}).catch(()=>{$('#cl').innerHTML='<p class="mu">Comments couldn\'t load.</p>'});
 }
 
@@ -281,9 +333,9 @@ function upload(){
   $('#uf').onchange=e=>{const f=e.target.files[0];if(f&&!$('#ut').value)$('#ut').value=f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').slice(0,100)};
   $('#up').onclick=async()=>{
     const f=$('#uf').files[0],title=$('#ut').value.trim();
-    if(!f||!/^video\//.test(f.type))return toast('Choose a video file.');
-    if(!title)return toast('Add a title.');
-    if(f.size>6e8)return toast('That file is over 600 MB.');
+    if(!f||!/^video\//.test(f.type))return toast('Choose a video file.','error');
+    if(!title)return toast('Add a title.','error');
+    if(f.size>6e8)return toast('That file is over 600 MB.','error');
     $('#up').disabled=true;const setP=(p,t)=>{$('#pb').style.width=p+'%';$('#pt').textContent=t};
     const vid=push(ref(db,N.v)).key,uid=me.uid,tp=`vuzora/thumbs/${uid}/${vid}.jpg`,vp=`vuzora/videos/${uid}/${vid}_${f.name.replace(/[^a-zA-Z0-9.\-_]/g,'_').slice(-60)}`;
     try{
@@ -293,7 +345,7 @@ function upload(){
       setP(98,'Publishing…');
       await set(ref(db,`${N.v}/${vid}`),{uid,title,desc:$('#ud').value.trim(),category:$('#uc').value,tags:[],videoUrl,thumbUrl,videoPath:vp,thumbPath:tp,duration,views:0,likes:0,commentsCount:0,createdAt:Date.now(),channelName:(ch&&ch.name)||me.displayName||'Creator',channelPhoto:(ch&&ch.photo)||''});
       bump(`${N.c}/${uid}/videoCount`,1).catch(()=>{});P=null;toast('Published');location.hash=`#/watch/${vid}`;
-    }catch(e){deleteObject(sr(st,tp)).catch(()=>{});deleteObject(sr(st,vp)).catch(()=>{});$('#up').disabled=false;setP(0,'');toast(/unauthorized|permission/i.test(e.code||e.message||'')?'Firebase blocked the upload. Check your Storage rules.':e.message)}
+    }catch(e){deleteObject(sr(st,tp)).catch(()=>{});deleteObject(sr(st,vp)).catch(()=>{});$('#up').disabled=false;setP(0,'');toast(/unauthorized|permission/i.test(e.code||e.message||'')?'Firebase blocked the upload. Check your Storage rules.':e.message,'error')}
   };
 }
 
@@ -307,7 +359,7 @@ async function countView(id){
 const touch=matchMedia('(hover:none)');let activeTh=null;const vis=new Set();let pt;
 function stopPrev(){if(!activeTh)return;const v=activeTh.querySelector('.pvv');if(v){v.pause();v.removeAttribute('src');v.load();v.remove()}activeTh=null}
 function preview(th){
-  if(th===activeTh||!th.dataset.src)return;stopPrev();
+  if(th===activeTh||!th.dataset.src||localStorage.getItem('vz_prev')==='0')return;stopPrev();
   const v=document.createElement('video');v.className='pvv';v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.src=th.dataset.src;
   th.insertBefore(v,th.querySelector('.d'));activeTh=th;v.play().catch(()=>{});
 }
@@ -319,6 +371,41 @@ function pickTouch(){
 const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));clearTimeout(pt);pt=setTimeout(pickTouch,350)},{threshold:.6});
 addEventListener('scroll',()=>{clearTimeout(pt);pt=setTimeout(pickTouch,350)},{passive:true});
 
+/* settings */
+async function sq(f){const b=await createImageBitmap(f),c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d'),k=Math.max(256/b.width,256/b.height),w=b.width*k,g=b.height*k;x.drawImage(b,(256-w)/2,(256-g)/2,w,g);return new Promise(r=>c.toBlob(r,'image/jpeg',.86))}
+function settings(){
+  const tp=localStorage.getItem('vz_theme')||'light',prev=localStorage.getItem('vz_prev')!=='0',nxt=localStorage.getItem('vz_next')!=='0';
+  V.innerHTML=`<div class="st"><h2>Settings</h2>
+  <section><h3>Account</h3>${me?`<div class="row" style="margin:0">${av(ch&&ch.photo,ch&&ch.name,48)}<div><b>${esc(ch?ch.name:me.displayName||'')}</b><div class="mu">${esc(me.email||'')}</div></div></div>`:'<p class="mu" style="margin:0">You are not signed in.</p>'}</section>
+  <section><h3>Appearance</h3><div class="seg">${['light','dark','system'].map(t=>`<button data-t="${t}" class="${tp==t?'on':''}">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div></section>
+  <section><h3>Playback</h3><label class="tg">Autoplay next video<input type="checkbox" id="sx" ${nxt?'checked':''}></label><label class="tg" style="margin-top:14px">Autoplay previews on cards<input type="checkbox" id="sp" ${prev?'checked':''}></label></section>
+  ${me?`<section class="f"><h3>Your channel</h3><label>Channel name<input id="sn" maxlength="40" value="${esc(ch?ch.name:'')}"></label><label>About<textarea id="sa" maxlength="500">${esc(ch?ch.about||'':'')}</textarea></label><label>Profile picture<input id="sf2" type="file" accept="image/*"></label><button class="btn p" id="ss">Save changes</button></section><section style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rp">Reset password</button><button class="btn" id="so2">Sign out</button></section>`:'<section><button class="btn p" id="si5">Sign in</button></section>'}</div>`;
+  V.querySelector('.seg').onclick=e=>{const b=e.target.closest('button');if(!b)return;setTheme(b.dataset.t);V.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('on',x==b))};
+  $('#sp').onchange=e=>{localStorage.setItem('vz_prev',e.target.checked?'1':'0');if(!e.target.checked)stopPrev()};
+  $('#sx').onchange=e=>localStorage.setItem('vz_next',e.target.checked?'1':'0');
+  if(!me){$('#si5').onclick=()=>signIn();return}
+  $('#rp').onclick=async()=>{try{await sendPasswordResetEmail(auth,me.email);toast('Reset link sent to '+me.email)}catch(e){toast(e.message,'error')}};
+  $('#so2').onclick=async()=>{if(await ask('Sign out?','You can sign back in any time.','Sign out')){await signOut(auth);toast('Signed out','info')}};
+  $('#ss').onclick=async()=>{
+    const name=$('#sn').value.trim();if(!name)return toast('Your channel needs a name.','error');
+    const b=$('#ss');b.disabled=true;
+    try{
+      const up={name,about:$('#sa').value.trim()},f=$('#sf2').files[0];
+      if(f)up.photo=await put(`vuzora/media/${me.uid}/avatar_${Date.now()}.jpg`,await sq(f));
+      await update(ref(db,`${N.c}/${me.uid}`),up);
+      const s=await get(query(ref(db,N.v),orderByChild('uid'),equalTo(me.uid))),patch={};
+      s.forEach(x=>{patch[`${N.v}/${x.key}/channelName`]=name;if(up.photo)patch[`${N.v}/${x.key}/channelPhoto`]=up.photo});
+      if(Object.keys(patch).length)await update(ref(db),patch);
+      ch={...ch,...up};P=null;chrome();toast('Settings saved');
+    }catch(e){toast(e.message,'error')}finally{b.disabled=false}
+  };
+}
+
+
+/* block context menu / drag on media and avatars */
+addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('img,video,.th,.av,.rel'))e.preventDefault()});
+addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('img,video,a'))e.preventDefault()});
+
 /* router */
 function route(){
   stopPrev();vis.clear();const p=document.querySelector('video');if(p)p.pause();
@@ -326,6 +413,7 @@ function route(){
   if(m=h.match(/^#\/watch\/([^/?]+)/))return watch(decodeURIComponent(m[1]),tk);
   if(m=h.match(/^#\/results\/(.*)$/))return search(decodeURIComponent(m[1]),tk);
   if(m=h.match(/^#\/channel\/([^/?]+)/))return channel(decodeURIComponent(m[1]),tk);
+  if(h=='#/settings')return settings();
   if(h=='#/upload')return upload();
   return home(tk);
 }
@@ -336,3 +424,4 @@ route();
 </script>
 </body>
 </html>
+a
