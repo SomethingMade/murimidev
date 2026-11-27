@@ -33,7 +33,7 @@ aside a,aside button{display:block;width:100%;text-align:left;padding:10px 12px;
 aside a:hover,aside a.on,aside button:hover{background:var(--s2)}
 main{margin-left:200px;padding:calc(72px + env(safe-area-inset-top)) 24px 40px}
 .chips{display:flex;gap:12px;overflow-x:auto;margin-bottom:20px;scrollbar-width:none}
-.chip{flex:none;height:32px;padding:0 12px;border-radius:8px;background:var(--s2);font-weight:500}
+.chip{flex:none;height:34px;padding:0 16px;border-radius:999px;background:var(--s2);font-weight:500;white-space:nowrap}
 .chip.on{background:var(--tx);color:var(--bg)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:40px 16px}
 .th{display:block;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--s2);position:relative}
@@ -342,10 +342,14 @@ async function home(tk){
   V.querySelector('.chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;CAT=b.dataset.c;V.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x==b));draw()};
 }
 async function search(q,tk){
-  $('#q').value=q;V.innerHTML=`<h2>Results for “${esc(q)}”</h2><div class="grid" id="g"></div>`;
+  const inp=$('#q');if(document.activeElement!==inp)inp.value=q;
+  if(!V.querySelector('#rh'))V.innerHTML='<h2 id="rh"></h2><div class="grid" id="g"></div>';
+  $('#rh').textContent=`Results for “${q}”`;
   try{
     const w=q.toLowerCase().split(/\s+/).filter(Boolean),items=await pool();if(tk!==T)return;
     const hits=items.filter(v=>{const h=`${v.title} ${v.channelName} ${v.category||''} ${v.desc||''}`.toLowerCase();return w.every(x=>h.includes(x))});
+    const score=v=>{const t=(v.title||'').toLowerCase(),c=(v.channelName||'').toLowerCase();let n=0;w.forEach(x=>{if(t.startsWith(x))n+=4;else if(t.includes(' '+x))n+=3;else if(t.includes(x))n+=2;if(c.includes(x))n+=1});return n};
+    hits.sort((a,b)=>score(b)-score(a)||(b.createdAt||0)-(a.createdAt||0));
     fill($('#g'),hits,`No matches for “${esc(q)}”.`);
   }catch(e){$('#g').innerHTML=`<div class="empty">${esc(e.message)}</div>`}
 }
@@ -713,7 +717,10 @@ function closeSearch(){sf.classList.remove('o');topbar.classList.remove('so');$(
 sf.querySelector('button').addEventListener('click',e=>{if(!sf.classList.contains('o')){e.preventDefault();openSearch()}});
 addEventListener('pointerdown',e=>{if(sf.classList.contains('o')&&!(e.target.closest&&e.target.closest('#sf')))closeSearch()},true);
 addEventListener('keydown',e=>{if(e.key==='Escape'&&sf.classList.contains('o'))closeSearch()});
-sf.onsubmit=e=>{e.preventDefault();const q=$('#q').value.trim();if(q){location.hash=`#/results/${encodeURIComponent(q)}`;closeSearch()}};
+let qT;
+const goSearch=q=>{const h=`#/results/${encodeURIComponent(q)}`;if(location.hash===h)return;if(location.hash.startsWith('#/results/'))location.replace(h);else location.hash=h};
+$('#q').addEventListener('input',()=>{clearTimeout(qT);const q=$('#q').value.trim();if(q)qT=setTimeout(()=>goSearch(q),250)});
+sf.onsubmit=e=>{e.preventDefault();clearTimeout(qT);const q=$('#q').value.trim();if(q){goSearch(q);closeSearch()}};
 onAuthStateChanged(auth,async u=>{me=u;ch=null;if(u){try{await ensureChannel(u)}catch(_){}}route()});
 route();
 </script>
