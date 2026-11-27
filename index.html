@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <title>Vuzora</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111113" id="mt">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cdefs%3E%3ClinearGradient id=%22vzg%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23FF5A3C%22/%3E%3Cstop offset=%221%22 stop-color=%22%23D4145A%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2232%22 height=%2232%22 rx=%229%22 fill=%22%23E32B2B%22/%3E%3Cpath d=%22M7.5 9.5L16 24l8.5-14.5%22 fill=%22none%22 stroke=%22%23fff%22 stroke-width=%223.2%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M13.6 11.5l5.2 3.3-5.2 3.3z%22 fill=%22%23fff%22/%3E%3C/svg%3E">
+<meta name="theme-color" content="#FFFFFF" id="mt">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23FF0033'/%3E%3Cpath d='M12 9l11 7-11 7z' fill='%23FFFFFF'/%3E%3C/svg%3E">
 <style>
-:root{--red:#E32B2B;--bg:#111113;--s2:#1E1E21;--s3:#2C2C31;--ln:#2C2C31;--tx:#F1F1F1;--mu:#AAA;--link:#3EA6FF;--hot:#FF4E45;color-scheme:dark}
-[data-theme=light]{--red:#E32B2B;--bg:#FFF;--s2:#F2F2F2;--s3:#E5E5E5;--ln:#E5E5E5;--tx:#0F0F0F;--mu:#606060;--link:#065FD4;--hot:#C00;color-scheme:light}
+:root{--bg:#0F0F0F;--s2:#272727;--s3:#3F3F3F;--ln:#303030;--tx:#F1F1F1;--mu:#AAA;--link:#3EA6FF;--hot:#FF4E45;color-scheme:dark}
+[data-theme=light]{--bg:#FFF;--s2:#F2F2F2;--s3:#E5E5E5;--ln:#E5E5E5;--tx:#0F0F0F;--mu:#606060;--link:#065FD4;--hot:#C00;color-scheme:light}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 Roboto,system-ui,-apple-system,"Segoe UI",sans-serif}
 a{color:inherit;text-decoration:none}
@@ -66,50 +66,23 @@ textarea{min-height:60px;resize:vertical}
 .empty{text-align:center;padding:60px 16px;color:var(--mu)}
 @media(max-width:800px){aside{display:none}main{margin:0;padding:calc(68px + env(safe-area-inset-top)) 12px 40px}.w{grid-template-columns:1fr}.logo span,.hide-m{display:none}.top{gap:8px;padding-left:12px;padding-right:12px}}
 
-/* ── mobile-app look ── */
-.btn.p{background:var(--red);color:#fff}
-.btn.on{background:var(--tx);color:var(--bg)}
-.ib{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none}
-.ib:hover{background:var(--s2)}
-.mob,.bn{display:none}
-.th{border-radius:20px}
-.t{font-size:15px}
-.chip{border-radius:999px;height:34px;padding:0 16px}
-.stories{display:flex;gap:14px;overflow-x:auto;padding:2px 0 16px;scrollbar-width:none}
-.stories a{flex:none;width:68px;text-align:center;font-size:12px;color:var(--mu)}
-.stories span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rg{position:relative;width:66px;height:66px;margin:0 auto 4px;border-radius:50%;border:2px solid var(--ln);padding:3px}
-.stories a:not(:first-child) .rg{border-color:var(--red)}
-.rg .av{width:100%!important;height:100%!important}
-.rg .pl{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center}
-.rg .pl .ic{width:14px;height:14px}
-.flt{display:flex;gap:16px;margin:0 0 20px;flex-wrap:wrap}
-.flt label{display:flex;align-items:center;gap:8px;color:var(--mu)}
-.flt select{background:var(--s2);border:0;border-radius:10px;padding:8px 10px;font-weight:600}
-.acts{display:flex;justify-content:space-around;background:var(--s2);border-radius:20px;padding:12px 8px;margin:12px 0}
-.acts>*{display:grid;justify-items:center;gap:4px;color:var(--mu);font-size:12px;min-width:64px}
-.acts .on{color:var(--red)}.acts .on .ic{fill:currentColor}
-.acts .ic{width:22px;height:22px}
-#sb{margin-left:auto;height:44px;padding:0 28px;border-radius:22px;font-weight:600}
+/* ── mobile bottom nav ── */
+.bn{display:none}
 @media(max-width:800px){
-  form.s{display:none}.mob{display:grid}.top .logo{margin-right:auto}
-  body.sq form.s{display:flex;margin:0;max-width:none}
-  body.sq .logo,body.sq .mob,body.sq #th,body.sq #acct{display:none}
-  .bn{display:flex;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));height:64px;background:var(--s2);border:1px solid var(--ln);border-radius:30px;z-index:20;align-items:center;justify-content:space-around;padding:0 6px}
-  .bn a{display:grid;justify-items:center;gap:2px;font-size:10.5px;color:var(--mu);padding:6px 10px;border-radius:16px}
-  .bn a.on{color:var(--tx);background:var(--s3)}
-  .bn .mk,.bn .mk.on{width:54px;height:54px;border-radius:50%;background:var(--red);color:#fff;margin-top:-28px;padding:0;place-items:center;box-shadow:0 6px 18px #e32b2b66}
-  main{padding-bottom:110px}
-  .grid{gap:24px}
-  video{border-radius:20px}
+  .bn{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;align-items:center;justify-content:space-around;background:var(--bg);border-top:1px solid var(--ln);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .bn a,.bn button{display:grid;justify-items:center;gap:2px;min-width:64px;padding:4px 0;font-size:10.5px;color:var(--mu)}
+  .bn a.on{color:var(--tx);font-weight:600}
+  .bn .mk,.bn .mk.on{width:48px;height:34px;min-width:0;border-radius:12px;background:#F03;color:#fff;place-items:center;padding:0}
+  main{padding-bottom:84px}
+  #toast{bottom:84px}
 }
 </style>
 </head>
 <body>
 <header class="top">
-  <a class="logo" href="#/"><svg viewBox="0 0 32 32"><defs><linearGradient id="vzg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5A3C"/><stop offset="1" stop-color="#D4145A"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#vzg)"/><path d="M7.5 9.5L16 24l8.5-14.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.6 11.5l5.2 3.3-5.2 3.3z" fill="#fff"/></svg><span>Vuzora</span></a>
+  <a class="logo" href="#/"><svg viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#FF0033"/><path d="M12 9l11 7-11 7z" fill="#FFFFFF"/></svg><span>Vuzora</span></a>
   <form class="s" id="sf"><input id="q" type="search" placeholder="Search" aria-label="Search"><button aria-label="Search" data-i="search"></button></form>
-  <button class="ib mob" id="sbm" aria-label="Search" data-i="search"></button><a class="btn hide-m" href="#/upload"><span data-i="plus"></span>Upload</a>
+  <a class="btn hide-m" href="#/upload"><span data-i="plus"></span>Upload</a>
   <button class="btn" id="th" aria-label="Switch theme"></button>
   <span id="acct"></span>
 </header>
@@ -137,7 +110,7 @@ const ago=t=>{if(!t)return'';const s=(Date.now()-t)/1e3;if(s<60)return'just now'
 const dur=s=>{s=Math.round(+s||0);const h=s/3600|0,m=(s%3600)/60|0,c=s%60;return h?`${h}:${String(m).padStart(2,0)}:${String(c).padStart(2,0)}`:`${m}:${String(c).padStart(2,0)}`};
 const linkify=s=>s.replace(/(https?:\/\/[^\s<]+)/g,'<a class="lk" href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
 const av=(p,n,z=36)=>safe(p)?`<img class="av" style="width:${z}px;height:${z}px" src="${esc(p)}" alt="" referrerpolicy="no-referrer">`:`<span class="av" style="width:${z}px;height:${z}px;background:hsl(${[...String(n||'?')].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,0)} 50% 42%)">${esc((String(n||'?')[0]||'?').toUpperCase())}</span>`;
-const ICONS={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-8c1.6 0 2.6 1.1 2.3 2.7L12.8 9H19a2 2 0 0 1 2 2.4l-1.3 6.6A2 2 0 0 1 17.7 20H7"/>',share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M7 8l5-5 5 5"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18.5 14.8c2 .7 3 2.3 3 5.2"/>',library:'<rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M7 3h10M10.5 10.5l4 2.5-4 2.5z"/>',download:'<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>'};
+const ICONS={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-8c1.6 0 2.6 1.1 2.3 2.7L12.8 9H19a2 2 0 0 1 2 2.4l-1.3 6.6A2 2 0 0 1 17.7 20H7"/>',share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M7 8l5-5 5 5"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'};
 const icon=n=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||''}</svg>`;
 document.querySelectorAll('[data-i]').forEach(s=>{s.outerHTML=icon(s.dataset.i)});
 let tt;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)};
@@ -146,8 +119,8 @@ const bump=(p,b)=>runTransaction(ref(db,p),c=>Math.max(0,(+c||0)+b));
 let me=null,ch=null,T=0,P=null,CAT='All';
 
 /* theme */
-const setTheme=t=>{document.documentElement.dataset.theme=t;localStorage.setItem('vz_theme',t);$('#mt').content=t=='dark'?'#111113':'#FFFFFF';$('#th').innerHTML=icon(t=='dark'?'sun':'moon')};
-setTheme(localStorage.getItem('vz_theme')||'dark');
+const setTheme=t=>{document.documentElement.dataset.theme=t;localStorage.setItem('vz_theme',t);$('#mt').content=t=='dark'?'#0F0F0F':'#FFFFFF';$('#th').innerHTML=icon(t=='dark'?'sun':'moon')};
+setTheme(localStorage.getItem('vz_theme')||'light');
 $('#th').onclick=()=>setTheme(document.documentElement.dataset.theme=='dark'?'light':'dark');
 
 /* data */
@@ -207,20 +180,20 @@ const need=m=>{if(me)return true;signIn(m);return false};
 function chrome(){
   $('#acct').innerHTML=me?`<a href="#/channel/${me.uid}" aria-label="Your channel">${av(ch&&ch.photo,(ch&&ch.name)||me.displayName||me.email,34)}</a>`:'<button class="btn p" id="si">Sign in</button>';
   if(!me)$('#si').onclick=()=>signIn();
-  $('#side').innerHTML=`<a href="#/" data-r="home">Home</a><a href="#/explore">Explore</a><a href="#/channels">Channels</a><a href="#/upload" data-r="upload">Upload</a>${me?`<a href="#/channel/${me.uid}" data-r="mine">Your channel</a><button id="so">Sign out</button>`:''}`;
+  $('#side').innerHTML=`<a href="#/" data-r="home">Home</a><a href="#/upload" data-r="upload">Upload</a>${me?`<a href="#/channel/${me.uid}" data-r="mine">Your channel</a><button id="so">Sign out</button>`:''}`;
   if(me)$('#so').onclick=async()=>{await signOut(auth);toast('Signed out')};
   const h=location.hash||'#/';
-  $('#bn').innerHTML=`<a href="#/">${icon('home')}<span>Home</span></a><a href="#/explore">${icon('compass')}<span>Explore</span></a><a class="mk" href="#/upload" aria-label="Upload">${icon('plus')}</a><a href="#/channels">${icon('users')}<span>Channels</span></a><a href="${me?'#/channel/'+me.uid:'#/library'}">${icon('library')}<span>Library</span></a>`;
+  $('#bn').innerHTML=`<a href="#/">${icon('home')}<span>Home</span></a><button id="bns">${icon('search')}<span>Search</span></button><a class="mk" href="#/upload" aria-label="Upload">${icon('plus')}</a>${me?`<a href="#/channel/${me.uid}">${icon('user')}<span>You</span></a>`:`<button id="bny">${icon('user')}<span>Sign in</span></button>`}`;
+  $('#bns').onclick=()=>{scrollTo(0,0);$('#q').focus()};
+  if(!me)$('#bny').onclick=()=>signIn();
   document.querySelectorAll('#side a,#bn a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')===h));
 }
 
 /* pages */
 async function home(tk){
-  V.innerHTML=`<div class="stories" id="st"></div><div class="chips">${['All',...CATS].map(c=>`<button class="chip${c==CAT?' on':''}" data-c="${c}">${c}</button>`).join('')}</div><div class="grid" id="g"></div>`;
+  V.innerHTML=`<div class="chips">${['All',...CATS].map(c=>`<button class="chip${c==CAT?' on':''}" data-c="${c}">${c}</button>`).join('')}</div><div class="grid" id="g"></div>`;
   let items;try{items=await pool()}catch(e){V.innerHTML=`<div class="empty">Couldn't load videos.<br>${esc(e.message)}</div>`;return}
   if(tk!==T)return;
-  const seen=new Map();items.forEach(v=>{if(!seen.has(v.uid))seen.set(v.uid,v)});
-  $('#st').innerHTML=`<a href="#/upload"><div class="rg">${av(me&&ch&&ch.photo,(ch&&ch.name)||'You',56)}<b class="pl">${icon('plus')}</b></div><span>Your video</span></a>`+[...seen.values()].slice(0,14).map(v=>ring(v.uid,v.channelPhoto,v.channelName)).join('');
   const draw=()=>fill($('#g'),items.filter(v=>CAT=='All'||v.category==CAT),'No videos here yet. <a class="lk" href="#/upload">Upload one</a>');
   draw();
   V.querySelector('.chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;CAT=b.dataset.c;V.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x==b));draw()};
@@ -264,10 +237,10 @@ async function watch(id,tk){
   V.innerHTML=`<div class="w"><div><video id="vp" controls playsinline autoplay poster="${esc(safe(v.thumbUrl))}" src="${esc(safe(v.videoUrl))}"></video>
   <h1 style="font-size:20px;margin:12px 0 0">${esc(v.title)}</h1>
   <div class="row"><a href="#/channel/${esc(v.uid)}" style="display:flex;gap:12px;align-items:center">${av(cs&&cs.exists()?cs.val().photo:v.channelPhoto,v.channelName,40)}<div><b>${esc(v.channelName)}</b><div class="mu" id="sc"></div></div></a>${own?'':'<button class="btn" id="sb"></button>'}
-  </div><div class="acts"><button id="lb"></button><button id="shb">${icon('share')}<span>Share</span></button><a id="dl" href="${esc(safe(v.videoUrl))}" target="_blank" rel="noopener" download>${icon('download')}<span>Download</span></a></div>
+  <div class="r"><button class="btn" id="lb"></button><button class="btn" id="shb">${icon('share')}Share</button></div></div>
   <div class="box"><b>${pl(v.views||0,'view')} · ${esc(ago(v.createdAt))}${v.category?' · '+esc(v.category):''}</b>\n${linkify(esc(v.desc||'No description.'))}</div>
   <h3 id="cn" style="margin-top:24px"></h3><div id="cb"></div><div id="cl"></div></div>
-  <aside style="position:static;width:auto;padding:0" id="rl"><h3 style="margin:0 0 12px">Maybe you like that</h3></aside></div>`;
+  <aside style="position:static;width:auto;padding:0" id="rl"></aside></div>`;
   const vp=$('#vp'),paint=()=>{$('#lb').innerHTML=`${icon('like')}<span>${num(likes)}</span>`;$('#lb').classList.toggle('on',liked);$('#sc').textContent=pl(subs,'subscriber');const b=$('#sb');if(b){b.textContent=subbed?'Subscribed':'Subscribe';b.className='btn'+(subbed?'':' p')}$('#cn').textContent=pl(cc,'comment')};
   paint();
   let counted=false;vp.addEventListener('timeupdate',()=>{if(!counted&&vp.currentTime>=5){counted=true;countView(id)}});
@@ -346,32 +319,6 @@ function pickTouch(){
 const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));clearTimeout(pt);pt=setTimeout(pickTouch,350)},{threshold:.6});
 addEventListener('scroll',()=>{clearTimeout(pt);pt=setTimeout(pickTouch,350)},{passive:true});
 
-const ring=(uid,photo,name)=>`<a href="#/channel/${esc(uid)}"><div class="rg">${av(photo,name,56)}</div><span>${esc(name)}</span></a>`;
-const signPage=(t,m)=>{V.innerHTML=`<div class="empty"><b>${t}</b><br>${m}<br><br><button class="btn p" id="sip">Sign in</button></div>`;$('#sip').onclick=()=>signIn()};
-async function explore(tk){
-  let cat='All';
-  V.innerHTML=`<h2>Explore</h2><div class="chips" id="et">${['All',...CATS].map(c=>`<button class="chip${c==cat?' on':''}" data-c="${c}">${c}</button>`).join('')}</div>
-  <div class="flt"><label>Date <select id="ed"><option value="0">Any time</option><option value="864e5">Today</option><option value="6048e5">This week</option><option value="2592e6">This month</option></select></label><label>Sort by <select id="es"><option value="v">Most views</option><option value="n">Newest</option></select></label></div><div class="grid" id="g"></div>`;
-  let items;try{items=await pool()}catch(e){$('#g').innerHTML=`<div class="empty">${esc(e.message)}</div>`;return}
-  if(tk!==T)return;
-  const draw=()=>{const r=+$('#ed').value,s=$('#es').value;let a=items.filter(v=>(cat=='All'||v.category==cat)&&(!r||Date.now()-v.createdAt<r));a=s=='v'?[...a].sort((x,y)=>(y.views||0)-(x.views||0)):a;fill($('#g'),a,'Nothing here yet.')};
-  draw();$('#ed').onchange=$('#es').onchange=draw;
-  $('#et').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;cat=b.dataset.c;V.querySelectorAll('#et .chip').forEach(x=>x.classList.toggle('on',x==b));draw()};
-}
-async function channels(tk){
-  if(!me)return signPage('Channels','Sign in to see channels you follow.');
-  V.innerHTML='<h2>Channels</h2><div class="stories" id="st"></div><div class="grid" id="g"></div>';
-  try{
-    const s=await get(ref(db,`${N.ms}/${me.uid}`)),ids=s.exists()?Object.keys(s.val()).slice(0,20):[];
-    if(!ids.length){$('#g').innerHTML='<div class="empty">No subscriptions yet. Subscribe to channels and their newest videos show up here.</div>';return}
-    const[cs,ls]=await Promise.all([Promise.all(ids.map(i=>get(ref(db,`${N.c}/${i}`)).catch(()=>null))),Promise.all(ids.map(i=>byChannel(i).catch(()=>[])))]);
-    if(tk!==T)return;
-    $('#st').innerHTML=cs.filter(c=>c&&c.exists()).map(c=>ring(c.key,c.val().photo,c.val().name)).join('');
-    fill($('#g'),ls.flat().sort((a,b)=>b.createdAt-a.createdAt).slice(0,60),'Nothing new yet.');
-  }catch(e){$('#g').innerHTML=`<div class="empty">${esc(e.message)}</div>`}
-}
-$('#sbm').onclick=()=>{document.body.classList.toggle('sq');if(document.body.classList.contains('sq'))$('#q').focus()};
-
 /* router */
 function route(){
   stopPrev();vis.clear();const p=document.querySelector('video');if(p)p.pause();
@@ -379,14 +326,11 @@ function route(){
   if(m=h.match(/^#\/watch\/([^/?]+)/))return watch(decodeURIComponent(m[1]),tk);
   if(m=h.match(/^#\/results\/(.*)$/))return search(decodeURIComponent(m[1]),tk);
   if(m=h.match(/^#\/channel\/([^/?]+)/))return channel(decodeURIComponent(m[1]),tk);
-  if(h=='#/explore')return explore(tk);
-  if(h=='#/channels')return channels(tk);
-  if(h=='#/library'){if(me){location.hash='#/channel/'+me.uid;return}return signPage('Library','Sign in to see your channel and uploads.')}
   if(h=='#/upload')return upload();
   return home(tk);
 }
 addEventListener('hashchange',route);
-$('#sf').onsubmit=e=>{e.preventDefault();const q=$('#q').value.trim();if(q){location.hash=`#/results/${encodeURIComponent(q)}`;$('#q').blur();document.body.classList.remove('sq')}};
+$('#sf').onsubmit=e=>{e.preventDefault();const q=$('#q').value.trim();if(q){location.hash=`#/results/${encodeURIComponent(q)}`;$('#q').blur()}};
 onAuthStateChanged(auth,async u=>{me=u;ch=null;if(u){try{await ensureChannel(u)}catch(_){}}route()});
 route();
 </script>
