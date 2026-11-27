@@ -162,6 +162,28 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 .pl-m .ic{width:16px;height:16px}
 .pl-er{position:absolute;inset:0;display:grid;place-items:center;background:#000;color:#bbb;text-align:center;padding:16px}
 .pl-er[hidden]{display:none}
+.gs{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;background:#000;color:#fff;padding-top:env(safe-area-inset-top);animation:gin .2s ease-out}
+@keyframes gin{from{transform:translateY(24px);opacity:0}}
+.gs button{color:#fff}
+.gs-x{width:48px;height:48px;margin:4px 4px 0;display:grid;place-items:center}
+.gs-x .ic{width:26px;height:26px}
+.gs-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 16px 14px}
+.gs-h h2{margin:0;font-size:20px}
+.gs-n{height:36px;padding:0 20px;border-radius:18px;background:#fff;color:#000!important;font-weight:600}
+.gs-n[disabled]{opacity:.35;pointer-events:none}
+.gs-g{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;align-content:start;padding-bottom:env(safe-area-inset-bottom)}
+.gs-c,.gs-a{position:relative;aspect-ratio:1;overflow:hidden;background:#1a1a1a;display:block;width:100%}
+.gs-a{display:grid;place-items:center;background:#222}
+.gs-a .ic{width:34px;height:34px}
+.gs-c video{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;border-radius:0;object-fit:cover;pointer-events:none}
+.gs-c.on{outline:3px solid #F03;outline-offset:-3px}
+.gs-d{position:absolute;right:6px;bottom:6px;padding:1px 6px;border-radius:6px;background:rgba(0,0,0,.6);font-size:13px;font-weight:600}
+.gs-ck{position:absolute;right:6px;top:6px;width:24px;height:24px;border-radius:50%;background:#F03;display:none;place-items:center}
+.gs-ck .ic{width:15px;height:15px}
+.gs-c.on .gs-ck{display:grid}
+.gs-e{flex:1;display:grid;place-content:center;justify-items:center;gap:14px;padding:24px;color:#aaa;text-align:center}
+.gs-e .ic{width:40px;height:40px}
+.gs-b{height:44px;padding:0 26px;border-radius:22px;background:#F03;font-weight:600}
 .btn.dlp{background:linear-gradient(90deg,var(--s3) var(--p,0%),var(--s2) var(--p,0%))}
 .pk input{display:none}
 .pz{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed var(--s3);border-radius:12px;background:var(--s2);color:var(--mu);font-weight:500;cursor:pointer;transition:.15s}
@@ -303,8 +325,9 @@ function chrome(){
   $('#side').innerHTML=`<a href="#/" data-r="home">Home</a><a href="#/upload" data-r="upload">Upload</a><a href="#/downloads">Downloads</a><a href="#/settings">Settings</a>${me?`<a href="#/channel/${me.uid}" data-r="mine">Your channel</a><button id="so">Sign out</button>`:''}`;
   if(me)$('#so').onclick=async()=>{if(await ask('Sign out?','You can sign back in any time.','Sign out')){await signOut(auth);toast('Signed out','info')}};
   const h=location.hash||'#/';
-  $('#bn').innerHTML=`<a href="#/">${icon('home')}<span>Home</span></a><button id="bns">${icon('search')}<span>Search</span></button><a class="mk" href="#/upload" aria-label="Upload">${icon('plus')}</a>${me?`<a href="#/channel/${me.uid}">${icon('user')}<span>You</span></a>`:`<button id="bny">${icon('user')}<span>Sign in</span></button>`}<a href="#/settings">${icon('settings')}<span>Settings</span></a>`;
+  $('#bn').innerHTML=`<a href="#/">${icon('home')}<span>Home</span></a><button id="bns">${icon('search')}<span>Search</span></button><button class="mk" id="bnu" aria-label="Upload">${icon('plus')}</button>${me?`<a href="#/channel/${me.uid}">${icon('user')}<span>You</span></a>`:`<button id="bny">${icon('user')}<span>Sign in</span></button>`}<a href="#/settings">${icon('settings')}<span>Settings</span></a>`;
   $('#bns').onclick=()=>{scrollTo(0,0);openSearch()};
+  $('#bnu').onclick=openGallery;
   if(!me)$('#bny').onclick=()=>signIn();
   document.querySelectorAll('#side a,#bn a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')===h));
 }
@@ -529,6 +552,42 @@ function mkPlayer(o){
   return{el,v};
 }
 
+/* gallery-style upload sheet (opened by the red + in the bottom nav) */
+let pendingFile=null,sheet=null,goUp=false;
+function openGallery(){
+  if(!me)return signIn('Sign in to upload.');
+  if(sheet)return;
+  const inp=document.createElement('input');inp.type='file';inp.accept='video/*';inp.multiple=true;
+  const urls=[];let files=[],sel=-1;
+  const el=sheet=document.createElement('div');el.className='gs';
+  el.innerHTML=`<div><button class="gs-x" aria-label="Close">${icon('close')}</button></div><div class="gs-h"><h2>Upload from gallery</h2><button class="gs-n" disabled>Next</button></div><div class="gs-e"></div>`;
+  const g=el.querySelector('.gs-e'),nx=el.querySelector('.gs-n');
+  const render=()=>{
+    urls.splice(0).forEach(u=>URL.revokeObjectURL(u));g.innerHTML='';
+    if(!files.length){g.className='gs-e';g.innerHTML=`${icon('upload')}<div>Choose videos from your gallery</div><button class="gs-b">Browse gallery</button>`;g.querySelector('button').onclick=()=>inp.click();nx.disabled=true;return}
+    g.className='gs-g';
+    const add=document.createElement('button');add.className='gs-a';add.setAttribute('aria-label','Add more videos');add.innerHTML=icon('plus');add.onclick=()=>inp.click();g.appendChild(add);
+    files.forEach((f,i)=>{const u=URL.createObjectURL(f);urls.push(u);const c=document.createElement('button');c.className='gs-c'+(i===sel?' on':'');
+      c.innerHTML=`<video muted playsinline preload="metadata" src="${u}#t=0.1"></video><span class="gs-d"></span><i class="gs-ck">${icon('check')}</i>`;
+      const vv=c.querySelector('video');vv.onloadedmetadata=()=>{c.querySelector('.gs-d').textContent=dur(vv.duration)};
+      c.onclick=()=>{sel=i;g.querySelectorAll('.gs-c').forEach((x,j)=>x.classList.toggle('on',j===i));nx.disabled=false};
+      g.appendChild(c)});
+    nx.disabled=sel<0;
+  };
+  inp.onchange=()=>{
+    const all=[...inp.files],ok=all.filter(f=>/^video\//.test(f.type)||/\.(mp4|webm|mov|mkv|m4v|3gp)$/i.test(f.name));
+    if(all.length&&!ok.length)toast('Please choose a video file.','error');
+    files=files.concat(ok);if(sel<0&&files.length===1)sel=0;inp.value='';render();
+  };
+  const cleanup=()=>{urls.splice(0).forEach(u=>URL.revokeObjectURL(u));el.remove();sheet=null;document.body.style.overflow=''};
+  const onPop=()=>{removeEventListener('popstate',onPop);cleanup();if(goUp){goUp=false;if(location.hash==='#/upload')route();else location.hash='#/upload'}};
+  history.pushState({vzg:1},'',location.href);addEventListener('popstate',onPop);
+  el.querySelector('.gs-x').onclick=()=>history.back();
+  nx.onclick=()=>{if(sel<0)return;pendingFile=files[sel];goUp=true;history.back()};
+  document.body.style.overflow='hidden';document.body.appendChild(el);render();
+  inp.click();
+}
+
 /* upload */
 const once=(e,n)=>new Promise((res,rej)=>{const t=setTimeout(()=>rej(new Error('Could not read this video.')),8000);e.addEventListener(n,()=>{clearTimeout(t);res()},{once:true})});
 async function frame(f){
@@ -546,6 +605,7 @@ function upload(){
   <label>Category<select id="uc">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></label>
   <div class="bar"><i id="pb"></i></div><p class="mu" id="pt"></p><button class="btn p" id="up">Publish</button></div>`;
   $('#uf').onchange=e=>{const f=e.target.files[0];if(f&&!$('#ut').value)$('#ut').value=f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').slice(0,100)};
+  if(pendingFile){try{const dt=new DataTransfer();dt.items.add(pendingFile);$('#uf').files=dt.files;$('#uf').dispatchEvent(new Event('change',{bubbles:true}))}catch(_){}pendingFile=null}
   $('#up').onclick=async()=>{
     const f=$('#uf').files[0],title=$('#ut').value.trim();
     if(!f||!/^video\//.test(f.type))return toast('Choose a video file.','error');
