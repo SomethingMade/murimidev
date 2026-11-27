@@ -105,6 +105,24 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
 img,svg,video,.av,.th,.d,.bn,aside,.chip,.btn{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 .th,.th *{-webkit-touch-callout:none}
+.s:not(.o){flex:none;margin:0 0 0 auto}
+.s:not(.o) input{display:none}
+.s:not(.o) button{width:40px;border:0;border-radius:50%;background:transparent}
+.s:not(.o) button:hover{background:var(--s2)}
+.s.o input{animation:sx .2s ease-out}
+@keyframes sx{from{opacity:0;transform:scaleX(.6);transform-origin:right}}
+.top.so .logo{display:none}
+.pk input{display:none}
+.pz{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed var(--s3);border-radius:12px;background:var(--s2);color:var(--mu);font-weight:500;cursor:pointer;transition:.15s}
+.pz:hover{border-color:var(--link);color:var(--tx)}
+.pz .ic{width:22px;height:22px}
+.pz .pn{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pz img{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none}
+.pk.has .pz{border-style:solid;color:var(--tx)}
+/* long-press prevention everywhere except text inputs */
+*{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+a,img{-webkit-user-drag:none}
+input:not([type=file]),textarea,[contenteditable],[contenteditable] *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 ::selection{background:transparent}
 input::selection,textarea::selection{background:#3EA6FF55}
 </style>
@@ -141,7 +159,7 @@ const ago=t=>{if(!t)return'';const s=(Date.now()-t)/1e3;if(s<60)return'just now'
 const dur=s=>{s=Math.round(+s||0);const h=s/3600|0,m=(s%3600)/60|0,c=s%60;return h?`${h}:${String(m).padStart(2,0)}:${String(c).padStart(2,0)}`:`${m}:${String(c).padStart(2,0)}`};
 const linkify=s=>s.replace(/(https?:\/\/[^\s<]+)/g,'<a class="lk" href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
 const av=(p,n,z=36)=>safe(p)?`<img class="av" style="width:${z}px;height:${z}px" src="${esc(p)}" alt="" referrerpolicy="no-referrer">`:`<span class="av" style="width:${z}px;height:${z}px;background:hsl(${[...String(n||'?')].reduce((a,c)=>(a*31+c.charCodeAt(0))%360,0)} 50% 42%)">${esc((String(n||'?')[0]||'?').toUpperCase())}</span>`;
-const ICONS={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-8c1.6 0 2.6 1.1 2.3 2.7L12.8 9H19a2 2 0 0 1 2 2.4l-1.3 6.6A2 2 0 0 1 17.7 20H7"/>',share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M7 8l5-5 5 5"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',check:'<path d="M5 12l5 5 9-10"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+const ICONS={upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',plus:'<path d="M12 5v14M5 12h14"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-8c1.6 0 2.6 1.1 2.3 2.7L12.8 9H19a2 2 0 0 1 2 2.4l-1.3 6.6A2 2 0 0 1 17.7 20H7"/>',share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M7 8l5-5 5 5"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',check:'<path d="M5 12l5 5 9-10"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 const icon=n=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||''}</svg>`;
 document.querySelectorAll('[data-i]').forEach(s=>{s.outerHTML=icon(s.dataset.i)});
 const AL=document.body.appendChild(Object.assign(document.createElement('div'),{id:'alerts'}));
@@ -235,7 +253,7 @@ function chrome(){
   if(me)$('#so').onclick=async()=>{if(await ask('Sign out?','You can sign back in any time.','Sign out')){await signOut(auth);toast('Signed out','info')}};
   const h=location.hash||'#/';
   $('#bn').innerHTML=`<a href="#/">${icon('home')}<span>Home</span></a><button id="bns">${icon('search')}<span>Search</span></button><a class="mk" href="#/upload" aria-label="Upload">${icon('plus')}</a>${me?`<a href="#/channel/${me.uid}">${icon('user')}<span>You</span></a>`:`<button id="bny">${icon('user')}<span>Sign in</span></button>`}<a href="#/settings">${icon('settings')}<span>Settings</span></a>`;
-  $('#bns').onclick=()=>{scrollTo(0,0);$('#q').focus()};
+  $('#bns').onclick=()=>{scrollTo(0,0);openSearch()};
   if(!me)$('#bny').onclick=()=>signIn();
   document.querySelectorAll('#side a,#bn a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')===h));
 }
@@ -327,7 +345,7 @@ const put=(path,blob,cb)=>new Promise((res,rej)=>{const t=uploadBytesResumable(s
 function upload(){
   if(!me){V.innerHTML='<div class="empty"><b>Upload a video</b><br>Sign in to share your videos.<br><br><button class="btn p" id="si2">Sign in</button></div>';$('#si2').onclick=()=>signIn('Sign in to upload.');return}
   V.innerHTML=`<div class="f" style="max-width:640px;margin:0 auto"><h2>Upload a video</h2><p class="mu">MP4 or WebM, up to 600 MB.</p>
-  <label>Video<input id="uf" type="file" accept="video/*"></label><label>Title<input id="ut" maxlength="100"></label><label>Description<textarea id="ud" maxlength="2000"></textarea></label>
+  <label class="pk">Video<input id="uf" type="file" accept="video/*"><span class="pz">${icon('upload')}<span class="pn">Choose a video</span></span></label><label>Title<input id="ut" maxlength="100"></label><label>Description<textarea id="ud" maxlength="2000"></textarea></label>
   <label>Category<select id="uc">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></label>
   <div class="bar"><i id="pb"></i></div><p class="mu" id="pt"></p><button class="btn p" id="up">Publish</button></div>`;
   $('#uf').onchange=e=>{const f=e.target.files[0];if(f&&!$('#ut').value)$('#ut').value=f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').slice(0,100)};
@@ -379,7 +397,7 @@ function settings(){
   <section><h3>Account</h3>${me?`<div class="row" style="margin:0">${av(ch&&ch.photo,ch&&ch.name,48)}<div><b>${esc(ch?ch.name:me.displayName||'')}</b><div class="mu">${esc(me.email||'')}</div></div></div>`:'<p class="mu" style="margin:0">You are not signed in.</p>'}</section>
   <section><h3>Appearance</h3><div class="seg">${['light','dark','system'].map(t=>`<button data-t="${t}" class="${tp==t?'on':''}">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div></section>
   <section><h3>Playback</h3><label class="tg">Autoplay next video<input type="checkbox" id="sx" ${nxt?'checked':''}></label><label class="tg" style="margin-top:14px">Autoplay previews on cards<input type="checkbox" id="sp" ${prev?'checked':''}></label></section>
-  ${me?`<section class="f"><h3>Your channel</h3><label>Channel name<input id="sn" maxlength="40" value="${esc(ch?ch.name:'')}"></label><label>About<textarea id="sa" maxlength="500">${esc(ch?ch.about||'':'')}</textarea></label><label>Profile picture<input id="sf2" type="file" accept="image/*"></label><button class="btn p" id="ss">Save changes</button></section><section style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rp">Reset password</button><button class="btn" id="so2">Sign out</button></section>`:'<section><button class="btn p" id="si5">Sign in</button></section>'}</div>`;
+  ${me?`<section class="f"><h3>Your channel</h3><label>Channel name<input id="sn" maxlength="40" value="${esc(ch?ch.name:'')}"></label><label>About<textarea id="sa" maxlength="500">${esc(ch?ch.about||'':'')}</textarea></label><label class="pk">Profile picture<input id="sf2" type="file" accept="image/*"><span class="pz">${icon('upload')}<span class="pn">Choose a photo</span></span></label><button class="btn p" id="ss">Save changes</button></section><section style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rp">Reset password</button><button class="btn" id="so2">Sign out</button></section>`:'<section><button class="btn p" id="si5">Sign in</button></section>'}</div>`;
   V.querySelector('.seg').onclick=e=>{const b=e.target.closest('button');if(!b)return;setTheme(b.dataset.t);V.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('on',x==b))};
   $('#sp').onchange=e=>{localStorage.setItem('vz_prev',e.target.checked?'1':'0');if(!e.target.checked)stopPrev()};
   $('#sx').onchange=e=>localStorage.setItem('vz_next',e.target.checked?'1':'0');
@@ -402,8 +420,18 @@ function settings(){
 }
 
 
-/* block context menu / drag on media and avatars */
-addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('img,video,.th,.av,.rel'))e.preventDefault()});
+/* custom file picker feedback */
+addEventListener('change',e=>{
+  const i=e.target;if(!i.matches||!i.matches('.pk input[type=file]'))return;
+  const l=i.closest('.pk'),z=l.querySelector('.pz'),f=i.files[0];
+  const old=z.querySelector('img');if(old){URL.revokeObjectURL(old.src);old.remove()}
+  l.classList.toggle('has',!!f);
+  z.querySelector('.pn').textContent=f?f.name:(i.accept.startsWith('image')?'Choose a photo':'Choose a video');
+  if(f&&f.type.startsWith('image/')){const m=new Image();m.src=URL.createObjectURL(f);z.prepend(m)}
+});
+
+/* block long-press menu / drag everywhere except text inputs */
+addEventListener('contextmenu',e=>{if(!(e.target.closest&&e.target.closest('input:not([type=file]),textarea,[contenteditable]')))e.preventDefault()});
 addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('img,video,a'))e.preventDefault()});
 
 /* router */
@@ -418,10 +446,16 @@ function route(){
   return home(tk);
 }
 addEventListener('hashchange',route);
-$('#sf').onsubmit=e=>{e.preventDefault();const q=$('#q').value.trim();if(q){location.hash=`#/results/${encodeURIComponent(q)}`;$('#q').blur()}};
+/* collapsible search: icon only, expands over the logo, collapses on any outside tap */
+const sf=$('#sf'),topbar=document.querySelector('.top');
+function openSearch(){sf.classList.add('o');topbar.classList.add('so');$('#q').focus()}
+function closeSearch(){sf.classList.remove('o');topbar.classList.remove('so');$('#q').blur()}
+sf.querySelector('button').addEventListener('click',e=>{if(!sf.classList.contains('o')){e.preventDefault();openSearch()}});
+addEventListener('pointerdown',e=>{if(sf.classList.contains('o')&&!(e.target.closest&&e.target.closest('#sf')))closeSearch()},true);
+addEventListener('keydown',e=>{if(e.key==='Escape'&&sf.classList.contains('o'))closeSearch()});
+sf.onsubmit=e=>{e.preventDefault();const q=$('#q').value.trim();if(q){location.hash=`#/results/${encodeURIComponent(q)}`;closeSearch()}};
 onAuthStateChanged(auth,async u=>{me=u;ch=null;if(u){try{await ensureChannel(u)}catch(_){}}route()});
 route();
 </script>
 </body>
 </html>
-a
